@@ -1,0 +1,62 @@
+# ============================================================================
+# TEMPLATE for backend/.env.prod
+#
+# This is not itself an env file - Claude cannot write .env* files through the
+# desktop bridge, so it is delivered under this name. Put it in place with:
+#
+#     cd backend
+#     cp CLOUD_ENV_TEMPLATE.txt .env.prod
+#     nano .env.prod          # fill in PUBLIC_URL and POSTGRES_PASSWORD
+#     chmod 600 .env.prod
+#
+# It also supersedes the committed .env.prod.example, which sets
+# LOG_REQUEST_BODY=True and LOG_LEVEL=debug - neither is right for production.
+# ============================================================================
+
+# Copy this file to .env.prod and fill in the values before deploying.
+# .env.prod is git-ignored — never commit real credentials.
+#
+#   cp .env.prod.example .env.prod
+#   nano .env.prod
+#   chmod 600 .env.prod
+
+# --- public address -------------------------------------------------------
+# The HTTPS URL the dashboard and the edge agents will use. Must match the
+# domain in infra_docker/Caddyfile, and must already resolve to this host.
+# Baked into the frontend build, so changing it needs a --build.
+PUBLIC_URL=https://dashboard.example.com
+RELEASE_VERSION=prod
+
+# --- PostgreSQL -----------------------------------------------------------
+POSTGRES_DB=hosp_prod
+POSTGRES_USER=hosp
+# Generate one, do not invent it:  openssl rand -base64 32
+POSTGRES_PASSWORD=CHANGE_ME_USE_openssl_rand_base64_32
+
+# DATABASE_URL and REDIS_URL are set automatically by the compose file from the
+# values above. Only set them here if you run the API outside Docker — and if
+# you do, keep the password in step with POSTGRES_PASSWORD.
+# DATABASE_URL=postgresql://hosp:PASSWORD@postgres:5432/hosp_prod
+# REDIS_URL=redis://redis:6379
+
+# --- API ------------------------------------------------------------------
+API_PORT=4000
+ENVIRONMENT=production      # 'production' also disables the /docs Swagger page
+
+# --- Logging --------------------------------------------------------------
+# These differ deliberately from the development defaults.
+LOGGING_ENABLED=True
+LOG_LEVEL=info              # debug is far too chatty for production
+LOG_TO_FILE=True
+LOG_DIR=logs
+LOG_RETENTION_HOURS=24
+
+# Keep this False in production. True logs the full body of every request,
+# which for /v1/edge/ingest means every device health payload from every edge
+# box on every poll — large, and it puts customer estate detail in plaintext
+# log files. Turn it on temporarily when debugging an ingest problem, then
+# turn it back off.
+LOG_REQUEST_BODY=False
+
+# --- Phase 2 --------------------------------------------------------------
+# JWT_PUBLIC_KEY=

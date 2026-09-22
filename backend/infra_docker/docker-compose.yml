@@ -1,0 +1,152 @@
+# =============================================================================
+# Docker Compose — IT Dashboard (Dev + Ubuntu Deployment)
+#
+# Services:
+#   - postgres          → PostgreSQL 16 (hosp_dev / hosp / hosp) at localhost:5432
+#   - pgadmin           → pgAdmin 4 web UI at http://localhost:5050
+#   - redis             → Redis 7 (no auth) at localhost:6379
+#   - redis-commander   → Redis web UI at http://localhost:8081
+#   - api               → FastAPI app at http://localhost:4000
+#
+# How to use (run from it-dashboard-api/ directory):
+#   Start all:          docker compose -f infra_docker/docker-compose.yml up -d --build
+#   Stop all:           docker compose -f infra_docker/docker-compose.yml down
+#   Wipe all data:      docker compose -f infra_docker/docker-compose.yml down -v
+#   View API logs:      docker logs hosp_api -f
+#   Restart API only:   docker compose -f infra_docker/docker-compose.yml up -d --build api
+#
+# Run scripts inside the API container:
+#   docker exec hosp_api python add_provider.py
+#   docker exec hosp_api python clean_db.py
+#   docker exec hosp_api python seed.py
+#
+# Connect pgAdmin to PostgreSQL:
+#   Host:     postgres        ← use service name, NOT localhost
+#   Port:     5432
+#   Username: hosp
+#   Password: hosp
+#   Database: hosp_dev
+# =============================================================================
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # PostgreSQL 16
+  # ---------------------------------------------------------------------------
+  postgres:
+    container_name: hosp_postgres
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: hosp_dev
+      POSTGRES_USER: hosp
+      POSTGRES_PASSWORD: hosp
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hosp -d hosp_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ---------------------------------------------------------------------------
+  # pgAdmin 4 — PostgreSQL web UI
+  # Access: http://localhost:5050
+  # Login:  admin@hosp.dev / admin
+  # ---------------------------------------------------------------------------
+  pgadmin:
+    container_name: hosp_pgadmin
+    image: dpage/pgadmin4:latest
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@hosp.dev
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ---------------------------------------------------------------------------
+  # Redis 7
+  # Used for: SSE pub/sub fan-out, idempotency keys (24h TTL)
+  # ---------------------------------------------------------------------------
+  redis:
+    container_name: hosp_redis
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  # ---------------------------------------------------------------------------
+  # Redis Commander — Redis web UI
+  # Access: http://localhost:8081
+  # ---------------------------------------------------------------------------
+  redis-commander:
+    container_name: hosp_redis_commander
+    image: rediscommander/redis-commander:latest
+    restart: unless-stopped
+    environment:
+      REDIS_HOSTS: local:redis:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  # ---------------------------------------------------------------------------
+  # FastAPI application
+  # Runs migrations on startup then starts uvicorn
+  # Exposed on host port 4000
+  # ---------------------------------------------------------------------------
+  api:
+    container_name: hosp_api
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    env_file:
+      - ../.env
+    environment:
+      DATABASE_URL: postgresql://hosp:hosp@postgres:5432/hosp_dev
+      REDIS_URL:    redis://redis:6379
+      ENVIRONMENT:  development
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:4000/livez')\""]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+# =============================================================================
+# Named volumes — data persists across docker-compose down (not down -v)
+# =============================================================================
+volumes:
+  postgres_data:
+    name: hosp_postgres_data
+  pgadmin_data:
+    name: hosp_pgadmin_data
+  redis_data:
+    name: hosp_redis_data

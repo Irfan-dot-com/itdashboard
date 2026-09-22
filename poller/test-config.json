@@ -1,0 +1,26 @@
+{
+  "edge_id": "sdlan-sheraton-01",
+  "service_provider": "bluip",
+  "property_id": "234",
+  "property_name": "Sheraton Downtown",
+  "cloud_endpoint": "http://127.0.0.1:4000/v1/edge/ingest",
+  "sdlan_base_url": "http://127.0.0.1:8443",
+  "sdlan_username": "apiuser",
+  "sdlan_password": "apipass",
+  "sdlan_verify_tls": false,
+  "poll_interval_seconds": 5,
+  "device_id_prefix": "sdlan-234",
+  "queue_db_path": "/tmp/pollertest/queue.db",
+  "state_db_path": "/tmp/pollertest/state.db",
+  "cloud_upload_log_path": "/tmp/pollertest/cloud_upload.log",
+  "sdlan_raw_log_path": "/tmp/pollertest/sdlan_raw.log",
+  "_README": [
+    "Local testing only - points at mock_sdlan.py and a dev dashboard API.",
+    "Never use this on a customer network; the real config lives in",
+    "/etc/sdlan-poller/config.json (see deploy/config.example.json).",
+    "",
+    "  python3 mock_sdlan.py --port 8443        # terminal 1",
+    "  python3 main.py --config test-config.json --once",
+    "  curl -X POST 'localhost:8443/_scenario?scenario=degrade'"
+  ]
+}

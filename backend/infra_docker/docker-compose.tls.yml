@@ -1,0 +1,144 @@
+# =============================================================================
+# Docker Compose — IT Dashboard CLOUD, with automatic HTTPS
+#
+# What this adds over docker-compose.prod.yml:
+#   * Caddy in front, terminating TLS with automatic Let's Encrypt certificates
+#     (issued and renewed with no cron job and no certbot dance)
+#   * the API is NO LONGER exposed on a host port — only Caddy is public, on
+#     80 and 443. Nothing else is reachable from the internet.
+#   * the dashboard frontend served from the SAME origin as the API, so the
+#     browser makes no cross-origin requests and CORS stops mattering
+#
+# The edge agents need exactly one reachable path: POST /v1/edge/ingest over
+# 443. That is what this gives them.
+#
+# Usage, from backend/ :
+#   1. cp .env.prod.example .env.prod   &&  edit it (see CLOUD_DEPLOY.md)
+#   2. edit infra_docker/Caddyfile      — put your real domain + email in it
+#   3. docker compose -f infra_docker/docker-compose.tls.yml up -d --build
+#   4. docker exec hosp_api python add_provider.py
+#   5. curl https://<your-domain>/livez
+#
+# Requires: a DNS A record for your domain pointing at this host, and inbound
+# 80 + 443 open. Port 80 must be reachable — Let's Encrypt uses it to validate.
+# =============================================================================
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # PostgreSQL 16 — internal only, never published to the host
+  # ---------------------------------------------------------------------------
+  postgres:
+    container_name: hosp_postgres
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       ${POSTGRES_DB:-hosp_prod}
+      POSTGRES_USER:     ${POSTGRES_USER:-hosp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env.prod}
+      PGDATA:            /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks: [hosp_net]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hosp} -d ${POSTGRES_DB:-hosp_prod}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  # ---------------------------------------------------------------------------
+  # Redis 7 — internal only (pub/sub for the SSE stream + idempotency keys)
+  # ---------------------------------------------------------------------------
+  redis:
+    container_name: hosp_redis
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    networks: [hosp_net]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  # ---------------------------------------------------------------------------
+  # FastAPI — migrations run on start via entrypoint.sh, then uvicorn.
+  # NOTE: no `ports:` block. Reachable only through Caddy.
+  # ---------------------------------------------------------------------------
+  api:
+    container_name: hosp_api
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: [../.env.prod]
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-hosp}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-hosp_prod}
+      REDIS_URL:    redis://redis:6379
+      ENVIRONMENT:  production
+    networks: [hosp_net]
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis:    {condition: service_healthy}
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:4000/livez')\""]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+  # ---------------------------------------------------------------------------
+  # Dashboard frontend — static build served by its own nginx.
+  #
+  # VITE_API_BASE_URL is baked in AT BUILD TIME, so it must be the public URL.
+  # Because Caddy serves both from one origin, the empty-ish same-origin value
+  # below is what you want: the browser calls https://<domain>/v1/... directly.
+  # Change PUBLIC_URL and rebuild (--build) if the domain ever changes.
+  # ---------------------------------------------------------------------------
+  frontend:
+    container_name: hosp_frontend
+    build:
+      context: ../../frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: ${PUBLIC_URL:?PUBLIC_URL must be set in .env.prod}
+        VITE_APP_ENV: production
+        VITE_ENABLE_MSW: "false"
+        VITE_ENABLE_SIMULATION: "false"
+        VITE_RELEASE_VERSION: ${RELEASE_VERSION:-prod}
+    restart: unless-stopped
+    networks: [hosp_net]
+
+  # ---------------------------------------------------------------------------
+  # Caddy — the only public service. Terminates TLS, routes to api/frontend.
+  # ---------------------------------------------------------------------------
+  caddy:
+    container_name: hosp_caddy
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"      # required for Let's Encrypt HTTP-01 validation + redirect
+      - "443:443"
+      - "443:443/udp"  # HTTP/3
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data        # certificates live here — DO NOT delete casually
+      - caddy_config:/config
+    networks: [hosp_net]
+    depends_on:
+      api: {condition: service_started}
+
+networks:
+  hosp_net:
+    name: hosp_net
+    driver: bridge
+
+volumes:
+  postgres_data: {name: hosp_postgres_data}
+  redis_data:    {name: hosp_redis_data}
+  caddy_data:    {name: hosp_caddy_data}
+  caddy_config:  {name: hosp_caddy_config}

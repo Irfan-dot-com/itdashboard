@@ -1,0 +1,112 @@
+# =============================================================================
+# Caddy — TLS termination and routing for the IT Dashboard cloud.
+#
+# EDIT THE TWO PLACEHOLDERS before first start:
+#   1. dashboard.example.com  -> your real domain (must already resolve here)
+#   2. admin@example.com      -> a real mailbox for Let's Encrypt notices
+#
+# Certificates are obtained and renewed automatically — nothing to schedule.
+# They live in the caddy_data volume. Keep it: deleting it re-requests certs
+# on every restart, which will hit Let's Encrypt rate limits.
+#
+# VALIDATE BEFORE STARTING (catches typos without touching the live service):
+#   docker run --rm -v "$PWD/Caddyfile":/etc/caddy/Caddyfile:ro caddy:2-alpine \
+#       caddy validate --config /etc/caddy/Caddyfile
+# =============================================================================
+
+{
+	email admin@example.com
+
+	# While testing, uncomment the staging CA so a misconfiguration does not
+	# burn your rate limit (5 failures per hostname per hour). Staging certs
+	# are NOT trusted, so the agents' preflight TLS check will fail until you
+	# comment this back out and restart.
+	# acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+}
+
+dashboard.example.com {
+
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	log {
+		output file /data/access.log {
+			roll_size 20mb
+			roll_keep 5
+		}
+		format json
+	}
+
+	# --- matchers ------------------------------------------------------------
+	# One `path` directive with several patterns ORs them. Do NOT split these
+	# across repeated `path` lines inside a named matcher.
+
+	# The live SSE stream. Must not be buffered.
+	@sse path /v1/stream*
+
+	# The only path the edge agents use. Separate matcher so you can rate-limit
+	# or IP-allowlist it later without touching the rest.
+	@ingest path /v1/edge/*
+
+	# Everything else served by FastAPI, including the health probes.
+	@api path /v1/* /livez /readyz /healthz /docs /docs/* /openapi.json
+
+	# --- routing -------------------------------------------------------------
+	# `route` preserves the order written here. Without it Caddy sorts
+	# directives by its own rules and the overlapping /v1/* matchers above
+	# would not necessarily be evaluated in this order.
+	route {
+		# flush_interval -1 disables response buffering; without it the browser
+		# receives nothing until the (never-ending) stream closes.
+		reverse_proxy @sse api:4000 {
+			flush_interval -1
+			transport http {
+				read_timeout 24h
+			}
+		}
+
+		reverse_proxy @ingest api:4000 {
+			header_up X-Real-IP {remote_host}
+		}
+
+		reverse_proxy @api api:4000 {
+			header_up X-Real-IP {remote_host}
+		}
+
+		# Fallback: the dashboard UI. Same origin as the API above, so the
+		# browser makes no cross-origin request and CORS is irrelevant.
+		# (app/main.py currently sets allow_origins=["*"] — with this layout
+		# you can tighten that to this domain or drop the middleware.)
+		reverse_proxy frontend:80
+	}
+}
+
+# =============================================================================
+# ALTERNATIVE: two subdomains instead of one origin
+#
+#   api.example.com {
+#       @sse path /v1/stream*
+#       route {
+#           reverse_proxy @sse api:4000 {
+#               flush_interval -1
+#               transport http { read_timeout 24h }
+#           }
+#           reverse_proxy api:4000
+#       }
+#   }
+#   dashboard.example.com {
+#       reverse_proxy frontend:80
+#   }
+#
+# Then set PUBLIC_URL=https://api.example.com in .env.prod (it becomes the
+# frontend's VITE_API_BASE_URL) and tighten allow_origins in app/main.py to
+# https://dashboard.example.com — requests are now cross-origin and DO need
+# CORS.
+# =============================================================================

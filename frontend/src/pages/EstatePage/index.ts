@@ -1,0 +1,1 @@
+export { EstatePage } from './EstatePage';

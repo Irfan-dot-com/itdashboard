@@ -1,0 +1,19 @@
+# /etc/logrotate.d/edge-agent
+#
+# uploader.py appends a full request+response block (including the entire JSON
+# body) for EVERY upload attempt. At a 60s summary interval with a few dozen
+# devices that is tens of MB per day, and nothing in the agent rotates it.
+# Without this file an edge box will eventually fill its disk.
+
+/var/log/edge-agent/cloud_upload.log {
+    daily
+    rotate 7
+    maxsize 50M
+    missingok
+    notifempty
+    compress
+    delaycompress
+    copytruncate
+    su edge-agent edge-agent
+    create 0640 edge-agent edge-agent
+}

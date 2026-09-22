@@ -1,0 +1,1 @@
+export { SeverityPill } from './SeverityPill';

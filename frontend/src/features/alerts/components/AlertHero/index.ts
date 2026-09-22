@@ -1,0 +1,1 @@
+export { AlertHero } from './AlertHero';

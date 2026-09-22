@@ -1,0 +1,7 @@
+# SD-LAN poller runtime dependencies.
+#   sudo -u sdlan-poller /opt/sdlan-poller/venv/bin/pip install -r requirements.txt
+requests>=2.31.0
+
+# Development / test only (not needed on an edge box):
+#   pytest>=8.0.0
+#   pydantic>=2.0       # only for tests/test_cloud_schema.py
