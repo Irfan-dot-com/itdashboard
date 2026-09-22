@@ -1,0 +1,15 @@
+services:
+  frontend:
+    build:
+      context: .
+      args:
+        VITE_APP_NAME: "IT Dashboard (qa)"
+        VITE_APP_ENV: qa
+        VITE_API_BASE_URL: http://localhost:8080
+        VITE_ENABLE_MSW: "false"
+        VITE_ENABLE_SIMULATION: "true"
+        VITE_RELEASE_VERSION: local-compose
+    image: it-dashboard-frontend:local
+    ports:
+      - "5174:80"
+    restart: unless-stopped

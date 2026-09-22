@@ -1,0 +1,34 @@
+# /etc/logrotate.d/sdlan-poller
+#
+# cloud_upload.log records a full request+response block for every upload.
+# sdlan_raw.log (when enabled for mapping work) records every raw API
+# response and grows much faster - disable it once the mapping is settled.
+#
+# SD-LAN credentials are redacted before anything is written to either file,
+# but rotate them anyway: an edge box has a small disk.
+
+/var/log/sdlan-poller/cloud_upload.log {
+    daily
+    rotate 7
+    maxsize 50M
+    missingok
+    notifempty
+    compress
+    delaycompress
+    copytruncate
+    su sdlan-poller sdlan-poller
+    create 0640 sdlan-poller sdlan-poller
+}
+
+/var/log/sdlan-poller/sdlan_raw.log {
+    daily
+    rotate 3
+    maxsize 100M
+    missingok
+    notifempty
+    compress
+    delaycompress
+    copytruncate
+    su sdlan-poller sdlan-poller
+    create 0640 sdlan-poller sdlan-poller
+}

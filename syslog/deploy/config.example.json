@@ -1,0 +1,76 @@
+{
+  "_README": [
+    "Copy this file to /etc/edge-agent/config.json and edit it for THIS edge box.",
+    "It overrides DEFAULT_CONFIG in config.py key-by-key (config.load merges them),",
+    "so you only need the keys you want to change - but set every value marked EDIT-ME.",
+    "",
+    "  sudo mkdir -p /etc/edge-agent",
+    "  sudo cp config.example.json /etc/edge-agent/config.json",
+    "  sudo nano /etc/edge-agent/config.json",
+    "  sudo chown root:edge-agent /etc/edge-agent/config.json",
+    "  sudo chmod 640 /etc/edge-agent/config.json",
+    "",
+    "Then validate:  cd /opt/edge-agent/app && python3 preflight.py",
+    "",
+    "--- device_map is the setting that matters most ---",
+    "Key format is exactly  \"<source_ip>|<syslog_hostname>\"  and BOTH parts must match",
+    "what the device actually puts on the wire. Anything not listed is silently DISCARDED.",
+    "Do not guess these values - discover them:",
+    "  sudo python3 discover.py --port 514 --duration 600",
+    "which prints every talker it hears and writes a ready-to-paste skeleton.",
+    "",
+    "device_id must be globally unique across ALL properties - it is the primary key in",
+    "the cloud devices table. Two physical devices sharing one device_id will overwrite",
+    "each other's health.",
+    "",
+    "Use \"*|hostname\" only when a device's source IP genuinely varies (DHCP); a wildcard",
+    "accepts that hostname from ANY source IP. config.py's DEFAULT_CONFIG ships six",
+    "simulator wildcards (*|switch-floor1, *|switch-floor2, *|router-edge, *|ap-lobby,",
+    "*|sensor-hvac-01, *|firewall-dmz). Because config.load merges dicts at the top level,",
+    "a device_map you define here REPLACES the default one entirely - which is what you",
+    "want, and is how those simulator rows get removed in production."
+  ],
+
+  "edge_id": "EDIT-ME-edge-sheraton-01",
+  "service_provider": "bluip",
+  "property_id": "EDIT-ME-234",
+  "property_name": "EDIT-ME-Sheraton Downtown",
+
+  "cloud_endpoint": "https://EDIT-ME-dashboard.example.com/v1/edge/ingest",
+
+  "listen_port": 514,
+
+  "summary_interval_seconds": 60,
+  "window_seconds": 300,
+  "stale_threshold_seconds": 180,
+
+  "upload_batch_size": 50,
+  "upload_retry_seconds": 30,
+
+  "queue_db_path": "/var/lib/edge-agent/queue.db",
+  "cloud_upload_log_path": "/var/log/edge-agent/cloud_upload.log",
+
+  "device_map": {
+    "10.20.30.11|HTL-SW-CORE-01": {
+      "device_id": "sheraton-sw-core-01",
+      "device_name": "sw_core_01",
+      "device_class": "poe_switch",
+      "vendor": "cisco",
+      "site": "sheraton-mdf"
+    },
+    "10.20.30.12|HTL-SW-POE-F3": {
+      "device_id": "sheraton-sw-poe-f3",
+      "device_name": "sw_poe_floor3",
+      "device_class": "poe_switch",
+      "vendor": "cisco",
+      "site": "sheraton-floor3"
+    },
+    "10.20.30.1|HTL-FG-EDGE": {
+      "device_id": "sheraton-fw-edge-01",
+      "device_name": "fw_edge_01",
+      "device_class": "firewall",
+      "vendor": "fortinet",
+      "site": "sheraton-mdf"
+    }
+  }
+}

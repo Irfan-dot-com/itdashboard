@@ -1,0 +1,150 @@
+# =============================================================================
+# Docker Compose — IT Dashboard, PoC / AWS FREE TIER profile
+#
+# For a t3.micro (2 burstable vCPU, 1 GiB RAM) on the AWS free tier.
+# Standalone — use this INSTEAD of docker-compose.tls.yml, not alongside it.
+#
+# What differs from the full stack, and why:
+#
+#   * NO frontend service. Building it runs `tsc` + `vite build`, which needs
+#     well over 1 GiB and gets OOM-killed on a micro. The dashboard UI is not
+#     needed to prove ingest works — the edge agents only ever call
+#     POST /v1/edge/ingest. Add the UI later on a bigger box.
+#
+#   * ONE uvicorn worker instead of two. Halves memory, and is actually more
+#     correct: each worker runs its own outbox poller, and with two of them an
+#     SSE client attached to one worker can miss events the other published.
+#
+#   * Memory limits on every container, so one of them cannot starve the box
+#     and trigger the OOM killer against the others.
+#
+#   * Postgres and Redis tuned down for a 1 GiB host.
+#
+# Usage, from backend/ :
+#   docker compose --env-file .env.prod -f infra_docker/docker-compose.poc.yml up -d --build
+#   docker exec hosp_api python add_provider.py
+#
+# Requires infra_docker/Caddyfile.poc (API-only; no frontend upstream).
+#
+# Memory budget on a 1 GiB box:
+# mem_limit values are CAPS, not reservations. Typical real usage is well
+# under them: postgres ~120M, api ~150M, redis ~15M, caddy ~25M = ~310M, plus
+# ~180M for Ubuntu itself. The caps total 624M, so even if everything spiked at
+# once the box survives. Still add the swap file from AWS_DEPLOY.md section 1 —
+# the API image build is the one memory-hungry moment.
+# =============================================================================
+
+services:
+
+  postgres:
+    container_name: hosp_postgres
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       ${POSTGRES_DB:-hosp_prod}
+      POSTGRES_USER:     ${POSTGRES_USER:-hosp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env.prod}
+      PGDATA:            /var/lib/postgresql/data/pgdata
+    # Tuned for a 1 GiB host. The defaults assume far more RAM.
+    command:
+      - postgres
+      - -c
+      - shared_buffers=96MB
+      - -c
+      - max_connections=30
+      - -c
+      - work_mem=2MB
+      - -c
+      - maintenance_work_mem=32MB
+      - -c
+      - effective_cache_size=256MB
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks: [hosp_net]
+    mem_limit: 224m
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hosp} -d ${POSTGRES_DB:-hosp_prod}"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  redis:
+    container_name: hosp_redis
+    image: redis:7-alpine
+    restart: unless-stopped
+    # The app uses Redis for pub/sub fan-out and short-lived idempotency keys.
+    # 64MB is ample for that; appendonly is off here because the only durable
+    # state is in Postgres and fsync churn is wasted IO on a PoC.
+    command: redis-server --save "" --appendonly no --maxmemory 64mb --maxmemory-policy allkeys-lru
+    networks: [hosp_net]
+    mem_limit: 80m
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  api:
+    container_name: hosp_api
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: [../.env.prod]
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-hosp}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-hosp_prod}
+      REDIS_URL:    redis://redis:6379
+      ENVIRONMENT:  production
+      DB_POOL_MIN:  "1"
+      DB_POOL_MAX:  "5"
+    # Replaces entrypoint.sh, which hardcodes --workers 2. Same behaviour:
+    # run migrations, then serve — but with a single worker.
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        echo "Running database migrations..."
+        python -m alembic upgrade head
+        echo "Starting API (1 worker, PoC profile)..."
+        exec python -m uvicorn app.main:app \
+             --host 0.0.0.0 --port 4000 --workers 1 \
+             --log-level "${LOG_LEVEL:-info}"
+    networks: [hosp_net]
+    mem_limit: 256m
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis:    {condition: service_healthy}
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:4000/livez')\""]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+
+  caddy:
+    container_name: hosp_caddy
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"        # required for Let's Encrypt validation
+      - "443:443"
+    volumes:
+      - ./Caddyfile.poc:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data          # certificates — keep this volume
+      - caddy_config:/config
+    networks: [hosp_net]
+    mem_limit: 64m
+    depends_on:
+      api: {condition: service_started}
+
+networks:
+  hosp_net:
+    name: hosp_net
+    driver: bridge
+
+volumes:
+  postgres_data: {name: hosp_postgres_data}
+  caddy_data:    {name: hosp_caddy_data}
+  caddy_config:  {name: hosp_caddy_config}

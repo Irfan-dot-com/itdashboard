@@ -1,0 +1,3003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Estate IT — Thwaites Group</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{
+  --bg:#0e0e0c;
+  --bg2:#16161347;
+  --surface:#1a1a17;
+  --surface2:#22221e;
+  --surface3:#2a2a25;
+  --border:#2c2c27;
+  --border2:#3a3a33;
+  --border3:#4a4a40;
+
+  --text:#e8e6dd;
+  --text2:#a39f92;
+  --text3:#6e6a5e;
+  --text4:#4a463c;
+
+  --red:#e85a4f;
+  --red-dim:#7a2a26;
+  --red-bg:#2a100e;
+  --amber:#e0a62a;
+  --amber-dim:#7a5a14;
+  --amber-bg:#241906;
+  --green:#7fb849;
+  --green-dim:#3d5a1f;
+  --green-bg:#152008;
+  --blue:#5b9fd6;
+  --blue-bg:#0a1822;
+  --teal:#3ec1a4;
+  --teal-dim:#1d6b5a;
+  --teal-bg:#062018;
+  --purple:#a591e8;
+
+  --radius:6px;
+  --radius-lg:10px;
+  --t-sans:'IBM Plex Sans','Inter',-apple-system,sans-serif;
+  --t-mono:'IBM Plex Mono','SF Mono',Menlo,monospace;
+}
+html.light{
+  --bg:#f7f5ee;
+  --bg2:#ede9dd80;
+  --surface:#ffffff;
+  --surface2:#f4f1e8;
+  --surface3:#ebe7d8;
+  --border:#e0dccd;
+  --border2:#cfcab8;
+  --border3:#b8b3a0;
+
+  --text:#1a1a14;
+  --text2:#5a564a;
+  --text3:#8a8576;
+  --text4:#b3ad9a;
+
+  --red:#c63a2c;
+  --red-dim:#e8b8b3;
+  --red-bg:#fbeae6;
+  --amber:#a06a08;
+  --amber-dim:#e8d8b0;
+  --amber-bg:#faecd0;
+  --green:#4a7510;
+  --green-dim:#cfe0a8;
+  --green-bg:#eef5dc;
+  --blue:#1f5fa6;
+  --blue-bg:#dfecf8;
+  --teal:#0d6e5a;
+  --teal-dim:#a8d8c8;
+  --teal-bg:#daf0e8;
+  --purple:#5b4ab2;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:var(--t-sans);
+  background:var(--bg);
+  color:var(--text);
+  font-size:13px;
+  line-height:1.5;
+  font-weight:400;
+  -webkit-font-smoothing:antialiased;
+  letter-spacing:-0.005em;
+}
+.mono{font-family:var(--t-mono);font-size:12px;letter-spacing:0}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+/* ============ SHELL ============ */
+.shell{display:grid;grid-template-columns:212px 1fr;min-height:100vh}
+
+/* ============ SIDEBAR ============ */
+.sidebar{
+  background:var(--surface);
+  border-right:0.5px solid var(--border);
+  display:flex;flex-direction:column;
+  padding:18px 0 12px;
+  position:sticky;top:0;height:100vh;
+}
+.brand{padding:0 18px 18px;border-bottom:0.5px solid var(--border);margin-bottom:14px}
+.brand-mark{
+  display:inline-flex;align-items:center;gap:9px;
+}
+.brand-glyph{
+  width:22px;height:22px;border-radius:5px;
+  background:var(--text);color:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:600;font-size:12px;
+  font-family:var(--t-mono);
+}
+.brand-name{font-size:13px;font-weight:500;letter-spacing:-0.01em}
+.brand-sub{font-size:10.5px;color:var(--text3);margin-top:8px;letter-spacing:0.04em;text-transform:uppercase;font-weight:500}
+
+.nav{padding:0 8px;flex:1}
+.nav-group{margin-bottom:14px}
+.nav-label{
+  font-size:10px;color:var(--text3);
+  text-transform:uppercase;letter-spacing:0.08em;font-weight:500;
+  padding:6px 10px 4px;
+}
+.nav-item{
+  display:flex;align-items:center;gap:9px;
+  padding:7px 10px;border-radius:var(--radius);
+  font-size:12.5px;color:var(--text2);
+  cursor:pointer;transition:background .12s,color .12s;
+  user-select:none;
+}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:var(--surface3);color:var(--text);font-weight:500}
+.nav-item.active .nav-icon{color:var(--text)}
+.nav-icon{width:14px;height:14px;color:var(--text3);flex-shrink:0;display:inline-block}
+.nav-badge{
+  margin-left:auto;
+  font-size:10px;font-family:var(--t-mono);
+  padding:1px 6px;border-radius:9px;
+  background:var(--red-bg);color:var(--red);
+  border:0.5px solid var(--red-dim);
+}
+.nav-badge.warn{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-dim)}
+.nav-badge.ok{background:var(--green-bg);color:var(--green);border-color:var(--green-dim)}
+.nav-badge.live{
+  background:var(--green-bg);color:var(--green);border-color:var(--green-dim);
+  display:flex;align-items:center;gap:4px;
+}
+.nav-badge.live::before{
+  content:'';width:5px;height:5px;border-radius:50%;
+  background:var(--green);
+  animation:pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+
+.sidebar-foot{padding:10px 14px;border-top:0.5px solid var(--border)}
+.user-pill{
+  display:flex;align-items:center;gap:9px;
+  padding:6px 8px;border-radius:var(--radius);
+}
+.avatar{
+  width:24px;height:24px;border-radius:50%;
+  background:var(--surface3);color:var(--text2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:500;font-family:var(--t-mono);
+  border:0.5px solid var(--border2);
+}
+.user-name{font-size:11.5px;line-height:1.3}
+.user-role{font-size:10px;color:var(--text3)}
+
+/* ============ MAIN ============ */
+.main{display:flex;flex-direction:column;min-width:0}
+
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 22px;
+  border-bottom:0.5px solid var(--border);
+  background:var(--bg);
+  position:sticky;top:0;z-index:5;
+}
+.crumbs{display:flex;align-items:center;gap:8px;font-size:12.5px}
+.crumb{color:var(--text2);cursor:pointer}
+.crumb:hover{color:var(--text)}
+.crumb.cur{color:var(--text);font-weight:500}
+.crumb-sep{color:var(--text4)}
+
+.top-actions{display:flex;align-items:center;gap:10px}
+.search{
+  display:flex;align-items:center;gap:7px;
+  padding:5px 9px;
+  border:0.5px solid var(--border2);border-radius:var(--radius);
+  background:var(--surface);
+  font-size:11.5px;color:var(--text3);
+  width:240px;
+  font-family:var(--t-mono);
+}
+.search:hover{border-color:var(--border3)}
+.search-key{
+  margin-left:auto;
+  font-size:10px;
+  padding:1px 5px;border-radius:3px;
+  background:var(--surface3);color:var(--text3);
+  border:0.5px solid var(--border);
+}
+.icon-btn{
+  width:28px;height:28px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:var(--radius);
+  color:var(--text2);
+  border:0.5px solid transparent;
+}
+.icon-btn:hover{background:var(--surface);color:var(--text);border-color:var(--border)}
+.icon-btn svg{width:14px;height:14px}
+
+.clock{
+  font-size:11px;font-family:var(--t-mono);color:var(--text2);
+  padding:4px 10px;border-radius:14px;
+  background:var(--surface);border:0.5px solid var(--border);
+}
+
+/* ============ CONTENT ============ */
+.content{padding:18px 22px 40px;flex:1}
+
+/* page transitions */
+.page{display:none}
+.page.active{display:block;animation:fadeIn .18s ease-out}
+@keyframes fadeIn{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}
+
+.page-head{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  margin-bottom:18px;flex-wrap:wrap;gap:12px;
+}
+.page-h1{font-size:22px;font-weight:500;letter-spacing:-0.02em;line-height:1.1}
+.page-sub{font-size:12.5px;color:var(--text2);margin-top:4px}
+
+.tabs{display:flex;gap:2px;border-bottom:0.5px solid var(--border);margin-bottom:14px}
+.tab{
+  padding:8px 12px;
+  font-size:12px;color:var(--text2);
+  border-bottom:1.5px solid transparent;
+  margin-bottom:-0.5px;
+  cursor:pointer;
+}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--text);border-bottom-color:var(--text);font-weight:500}
+
+.btn{
+  padding:6px 11px;
+  border-radius:var(--radius);
+  font-size:11.5px;font-weight:500;
+  border:0.5px solid var(--border2);
+  background:var(--surface);
+  color:var(--text);
+  display:inline-flex;align-items:center;gap:6px;
+  transition:background .1s,border-color .1s;
+}
+.btn:hover{background:var(--surface2);border-color:var(--border3)}
+.btn-prime{background:var(--text);color:var(--bg);border-color:var(--text)}
+.btn-prime:hover{background:var(--text2);border-color:var(--text2);color:var(--bg)}
+.btn-danger{
+  background:var(--red-bg);color:var(--red);border-color:var(--red-dim);
+}
+.btn-danger:hover{background:var(--red-dim);color:#fff}
+.btn-ghost{border-color:transparent;background:transparent;color:var(--text2)}
+.btn-ghost:hover{color:var(--text);background:var(--surface)}
+
+.chip{
+  font-size:10px;font-weight:500;
+  padding:2px 7px;border-radius:10px;
+  display:inline-flex;align-items:center;gap:4px;
+  border:0.5px solid var(--border);
+  background:var(--surface);color:var(--text2);
+  letter-spacing:0.01em;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.chip.red{background:var(--red-bg);color:var(--red);border-color:var(--red-dim)}
+.chip.amber{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-dim)}
+.chip.green{background:var(--green-bg);color:var(--green);border-color:var(--green-dim)}
+.chip.blue{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-bg)}
+.chip.teal{background:var(--teal-bg);color:var(--teal);border-color:var(--teal-dim)}
+.chip.dim{background:transparent;color:var(--text3);border-color:var(--border2);text-transform:none;letter-spacing:0}
+
+/* dot status */
+.dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0}
+.dot.red{background:var(--red);box-shadow:0 0 0 3px var(--red-bg)}
+.dot.amber{background:var(--amber);box-shadow:0 0 0 3px var(--amber-bg)}
+.dot.green{background:var(--green)}
+.dot.gray{background:var(--text4)}
+.dot.pulsing{animation:pulse 1.6s ease-in-out infinite}
+
+/* ============ KPI STRIP ============ */
+.kpi-strip{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:1px;
+  background:var(--border);
+  border:0.5px solid var(--border);
+  border-radius:var(--radius-lg);
+  margin-bottom:18px;
+  overflow:hidden;
+}
+.kpi{
+  background:var(--surface);
+  padding:14px 16px;
+  display:flex;flex-direction:column;
+  gap:5px;
+}
+.kpi-l{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;font-weight:500}
+.kpi-v{font-size:24px;font-weight:500;line-height:1;letter-spacing:-0.02em;font-family:var(--t-mono)}
+.kpi-v.red{color:var(--red)}
+.kpi-v.amber{color:var(--amber)}
+.kpi-v.green{color:var(--green)}
+.kpi-d{font-size:10.5px;color:var(--text3);display:flex;align-items:center;gap:5px;margin-top:1px}
+.kpi-d .delta-up{color:var(--green)}
+.kpi-d .delta-dn{color:var(--red)}
+
+/* ============ ESTATE GRID ============ */
+.estate-controls{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:12px;flex-wrap:wrap;gap:10px;
+}
+.filter-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.filter-pill{
+  font-size:11.5px;color:var(--text2);
+  padding:5px 11px;border-radius:14px;
+  border:0.5px solid var(--border2);background:var(--surface);
+  cursor:pointer;
+}
+.filter-pill:hover{color:var(--text);border-color:var(--border3)}
+.filter-pill.active{background:var(--text);color:var(--bg);border-color:var(--text)}
+
+.estate-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:10px;
+}
+.site-card{
+  background:var(--surface);
+  border:0.5px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:14px 16px 12px;
+  cursor:pointer;
+  transition:border-color .12s,transform .12s;
+  position:relative;
+  overflow:hidden;
+}
+.site-card:hover{border-color:var(--border3);transform:translateY(-1px)}
+.site-card.crit{border-color:var(--red-dim)}
+.site-card.crit::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--red);
+}
+.site-card.warn{border-color:var(--amber-dim)}
+.site-card.warn::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--amber);
+}
+.site-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.site-name{font-size:14px;font-weight:500;line-height:1.2}
+.site-meta{font-size:10.5px;color:var(--text3);margin-top:2px;font-family:var(--t-mono)}
+.site-score{
+  font-family:var(--t-mono);font-size:18px;font-weight:500;
+  line-height:1;letter-spacing:-0.01em;
+}
+.site-score.green{color:var(--green)}
+.site-score.amber{color:var(--amber)}
+.site-score.red{color:var(--red)}
+.site-spark{height:32px;margin:8px 0 10px;position:relative}
+.site-alerts{
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;color:var(--text2);
+  border-top:0.5px solid var(--border);padding-top:9px;
+}
+.site-alert-counts{display:flex;gap:8px;font-family:var(--t-mono);font-size:11px}
+.sac{display:flex;align-items:center;gap:3px}
+.sac.r{color:var(--red)}
+.sac.a{color:var(--amber)}
+.sac.g{color:var(--text3)}
+.site-worst{
+  margin-top:7px;font-size:11px;color:var(--text2);
+  display:flex;align-items:center;gap:6px;
+  line-height:1.3;
+}
+.site-worst-sig{color:var(--text);font-weight:500}
+
+/* ============ ALERT QUEUE ============ */
+.alert-queue{
+  background:var(--surface);
+  border:0.5px solid var(--border);
+  border-radius:var(--radius-lg);
+  margin-bottom:14px;
+  overflow:hidden;
+}
+.aq-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:11px 16px;border-bottom:0.5px solid var(--border);
+}
+.aq-title{font-size:12.5px;font-weight:500;display:flex;align-items:center;gap:9px}
+.aq-title-count{font-size:11px;color:var(--text3);font-family:var(--t-mono);font-weight:400}
+.aq-list{display:flex;flex-direction:column}
+.aq-row{
+  display:grid;
+  grid-template-columns:6px 80px 90px 1fr 100px 90px 28px;
+  gap:14px;align-items:center;
+  padding:10px 16px;
+  border-bottom:0.5px solid var(--border);
+  cursor:pointer;
+  transition:background .1s;
+}
+.aq-row:last-child{border-bottom:none}
+.aq-row:hover{background:var(--surface2)}
+.aq-sev{width:3px;height:30px;border-radius:1.5px}
+.aq-sev.p1{background:var(--red)}
+.aq-sev.p2{background:var(--amber)}
+.aq-sev.p3{background:var(--blue)}
+.aq-sev.info{background:var(--text4)}
+.aq-time{font-family:var(--t-mono);font-size:11px;color:var(--text3)}
+.aq-site{font-size:11.5px;font-weight:500}
+.aq-body{display:flex;flex-direction:column;gap:2px;min-width:0}
+.aq-summary{font-size:12px;line-height:1.4;font-weight:500}
+.aq-detail{font-size:11px;color:var(--text2);line-height:1.4}
+.aq-impact{font-size:11px;color:var(--text3);text-align:right}
+.aq-impact-v{color:var(--text);font-weight:500}
+.aq-tag{display:flex;justify-content:flex-end}
+
+/* agent-triaged badge */
+.agent-tag{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:10px;
+  padding:1px 6px 1px 5px;border-radius:9px;
+  background:var(--teal-bg);color:var(--teal);
+  border:0.5px solid var(--teal-dim);
+  font-weight:500;
+}
+.agent-tag::before{
+  content:'';width:5px;height:5px;border-radius:50%;
+  background:var(--teal);
+}
+
+/* ============ ALERT DETAIL ============ */
+.alert-detail{
+  display:grid;
+  grid-template-columns:1fr 360px;
+  gap:14px;
+  margin-bottom:18px;
+}
+.ad-main{display:flex;flex-direction:column;gap:14px;min-width:0}
+
+.panel{
+  background:var(--surface);
+  border:0.5px solid var(--border);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+}
+.panel-head{
+  padding:11px 16px;
+  border-bottom:0.5px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.panel-title{font-size:12.5px;font-weight:500;display:flex;align-items:center;gap:8px}
+.panel-title-icon{
+  width:18px;height:18px;border-radius:4px;
+  background:var(--surface2);color:var(--text2);
+  display:flex;align-items:center;justify-content:center;
+}
+.panel-title-icon svg{width:11px;height:11px}
+.panel-body{padding:14px 16px}
+.panel-body.tight{padding:10px 16px}
+
+/* alert header (top) */
+.alert-hero{
+  background:linear-gradient(180deg,var(--surface) 0%,var(--surface2) 100%);
+  border:0.5px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:18px 20px 16px;
+  position:relative;
+  overflow:hidden;
+}
+.alert-hero.p1{border-left:3px solid var(--red)}
+.alert-hero.p2{border-left:3px solid var(--amber)}
+.hero-row1{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.hero-h{font-size:18px;font-weight:500;line-height:1.25;letter-spacing:-0.015em;margin-bottom:6px}
+.hero-meta{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--text2)}
+.hero-meta-item{display:flex;align-items:center;gap:5px}
+.hero-meta-l{color:var(--text3)}
+.hero-meta-v{color:var(--text);font-weight:500}
+
+/* causal chain */
+.chain{display:flex;flex-direction:column;gap:0}
+.chain-row{
+  display:grid;
+  grid-template-columns:140px 1fr;
+  gap:14px;
+  padding:13px 0;
+  border-bottom:0.5px solid var(--border);
+  align-items:flex-start;
+}
+.chain-row:last-child{border-bottom:none}
+.chain-tier{
+  display:flex;align-items:center;gap:8px;
+  font-size:10.5px;color:var(--text3);
+  text-transform:uppercase;letter-spacing:0.06em;font-weight:500;
+}
+.chain-tier-num{
+  width:18px;height:18px;border-radius:50%;
+  background:var(--surface2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;color:var(--text2);font-weight:500;font-family:var(--t-mono);
+  border:0.5px solid var(--border2);
+}
+.chain-content{}
+.chain-h{font-size:13px;font-weight:500;margin-bottom:3px}
+.chain-d{font-size:12px;color:var(--text2);line-height:1.5}
+.chain-d code{font-family:var(--t-mono);font-size:11px;color:var(--text);background:var(--surface2);padding:1px 5px;border-radius:3px;border:0.5px solid var(--border2)}
+.chain-meta{display:flex;gap:10px;margin-top:5px;font-size:10.5px;color:var(--text3);font-family:var(--t-mono)}
+
+/* signal sparkline */
+.signal-spark{height:60px;margin-top:8px;position:relative}
+
+/* agent reasoning */
+.reasoning{
+  background:var(--teal-bg);
+  border:0.5px solid var(--teal-dim);
+  border-radius:var(--radius);
+  padding:12px 14px;
+  margin-top:6px;
+  position:relative;
+}
+.reasoning-h{
+  display:flex;align-items:center;gap:7px;
+  font-size:11px;color:var(--teal);
+  text-transform:uppercase;letter-spacing:0.06em;font-weight:500;
+  margin-bottom:8px;
+}
+.reasoning-h svg{width:12px;height:12px}
+.reasoning-body{font-size:12px;color:var(--text);line-height:1.55}
+.reasoning-meta{
+  display:flex;gap:14px;margin-top:9px;
+  font-size:10.5px;color:var(--text2);
+  font-family:var(--t-mono);
+  padding-top:8px;border-top:0.5px solid var(--teal-dim);
+}
+.reasoning-meta strong{color:var(--text);font-weight:500}
+
+/* action panel (right) */
+.action-card{
+  background:var(--surface);
+  border:0.5px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:0;
+  position:sticky;top:80px;
+}
+.action-head{
+  padding:14px 16px 12px;
+  border-bottom:0.5px solid var(--border);
+}
+.action-eyebrow{
+  font-size:10px;color:var(--teal);text-transform:uppercase;
+  letter-spacing:0.07em;font-weight:500;margin-bottom:5px;
+}
+.action-title{font-size:14px;font-weight:500;line-height:1.3;margin-bottom:6px}
+.action-desc{font-size:11.5px;color:var(--text2);line-height:1.5}
+.action-meta-list{
+  padding:10px 16px;
+  border-bottom:0.5px solid var(--border);
+  display:flex;flex-direction:column;gap:7px;
+}
+.aml-row{display:flex;justify-content:space-between;font-size:11px}
+.aml-l{color:var(--text3)}
+.aml-v{color:var(--text);font-family:var(--t-mono)}
+
+.auth-block{
+  padding:12px 16px;
+  border-bottom:0.5px solid var(--border);
+  background:var(--surface2);
+}
+.auth-row{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:11px;
+}
+.auth-status{display:flex;align-items:center;gap:6px;color:var(--green)}
+.auth-link{color:var(--text2);text-decoration:none;font-size:10.5px}
+.auth-link:hover{color:var(--text)}
+
+.action-btns{padding:14px 16px;display:flex;flex-direction:column;gap:7px}
+.action-btns .btn{justify-content:center;padding:9px 12px;font-size:12px}
+.action-secondary-row{display:flex;gap:6px;margin-top:3px}
+.action-secondary-row .btn{flex:1;padding:7px 8px;font-size:11px}
+
+/* runbook list */
+.runbook{padding:0}
+.runbook-row{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 16px;
+  border-bottom:0.5px solid var(--border);
+  font-size:11.5px;
+}
+.runbook-row:last-child{border-bottom:none}
+.runbook-num{
+  width:18px;height:18px;border-radius:50%;
+  background:var(--surface2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-family:var(--t-mono);color:var(--text2);
+  flex-shrink:0;
+  border:0.5px solid var(--border2);
+}
+.runbook-row.done .runbook-num{background:var(--teal-bg);color:var(--teal);border-color:var(--teal-dim)}
+.runbook-text{flex:1;color:var(--text)}
+.runbook-row.done .runbook-text{color:var(--text2)}
+.runbook-time{font-family:var(--t-mono);font-size:10.5px;color:var(--text3)}
+
+/* on-call */
+.oncall-row{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 16px;
+  border-bottom:0.5px solid var(--border);
+}
+.oncall-row:last-child{border-bottom:none}
+.oncall-info{flex:1}
+.oncall-name{font-size:12px;font-weight:500}
+.oncall-role{font-size:10.5px;color:var(--text3)}
+.oncall-status{font-size:10.5px;font-family:var(--t-mono)}
+
+/* ============ EXEC FACE ============ */
+.exec-grid{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  gap:12px;
+}
+.exec-tile{
+  background:var(--surface);
+  border:0.5px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:14px 16px;
+}
+.tile-h{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:10px}
+.tile-l{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;font-weight:500;line-height:1.3}
+.tile-info{font-size:10px;color:var(--text4);cursor:help}
+.tile-bignum{font-size:32px;font-weight:500;font-family:var(--t-mono);letter-spacing:-0.02em;line-height:1;margin-bottom:6px}
+.tile-bignum.green{color:var(--green)}
+.tile-bignum.amber{color:var(--amber)}
+.tile-bignum.red{color:var(--red)}
+.tile-cmp{font-size:11px;color:var(--text2)}
+.tile-cmp .delta-up{color:var(--green);font-weight:500}
+.tile-cmp .delta-dn{color:var(--red);font-weight:500}
+.tile-canvas{height:80px;margin-top:10px;position:relative}
+
+.span-3{grid-column:span 3}
+.span-4{grid-column:span 4}
+.span-6{grid-column:span 6}
+.span-8{grid-column:span 8}
+.span-12{grid-column:span 12}
+
+/* exec problem list */
+.problist{display:flex;flex-direction:column}
+.prob-row{
+  display:grid;grid-template-columns:24px 1fr 80px 70px;
+  gap:10px;align-items:center;
+  padding:8px 0;
+  border-bottom:0.5px solid var(--border);
+  font-size:12px;
+}
+.prob-row:last-child{border-bottom:none}
+.prob-rank{
+  font-family:var(--t-mono);font-size:11px;color:var(--text3);
+  text-align:center;
+}
+.prob-name{font-weight:500}
+.prob-meta{font-size:10.5px;color:var(--text3)}
+.prob-num{font-family:var(--t-mono);font-size:12px;text-align:right;color:var(--text)}
+.prob-bar{
+  height:4px;background:var(--surface2);border-radius:2px;
+  overflow:hidden;position:relative;
+}
+.prob-bar-fill{
+  height:100%;background:var(--text2);
+  border-radius:2px;
+}
+
+/* device class grid */
+.dc-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.dc-cell{
+  background:var(--surface2);
+  border:0.5px solid var(--border);
+  border-radius:var(--radius);
+  padding:10px 11px;
+}
+.dc-name{font-size:11px;font-weight:500;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between}
+.dc-stats{display:flex;align-items:baseline;gap:5px;font-family:var(--t-mono)}
+.dc-num{font-size:18px;font-weight:500}
+.dc-num.red{color:var(--red)}
+.dc-num.amber{color:var(--amber)}
+.dc-num.green{color:var(--green)}
+.dc-of{font-size:10.5px;color:var(--text3)}
+.dc-worst{font-size:10px;color:var(--text3);margin-top:5px;line-height:1.4}
+
+/* property page */
+.prop-head{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  margin-bottom:14px;flex-wrap:wrap;gap:14px;
+}
+.prop-id{display:flex;align-items:center;gap:12px}
+.prop-icon{
+  width:44px;height:44px;border-radius:9px;
+  background:var(--surface2);border:0.5px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;font-weight:500;font-family:var(--t-mono);
+}
+.prop-name-block .page-h1{margin-bottom:4px}
+.prop-stats{
+  display:flex;gap:18px;font-size:11.5px;
+  flex-wrap:wrap;
+}
+.prop-stat-l{color:var(--text3);font-size:10.5px;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:2px;display:block}
+.prop-stat-v{font-family:var(--t-mono);font-size:14px;color:var(--text);font-weight:500}
+
+.device-list{
+  display:flex;flex-direction:column;
+  border:0.5px solid var(--border);border-radius:var(--radius-lg);
+  background:var(--surface);overflow:hidden;
+}
+.dev-row{
+  display:grid;
+  grid-template-columns:140px 1fr 90px 100px 90px 24px;
+  gap:14px;align-items:center;
+  padding:10px 16px;
+  border-bottom:0.5px solid var(--border);
+  font-size:11.5px;
+}
+.dev-row:last-child{border-bottom:none}
+.dev-row:hover{background:var(--surface2)}
+.dev-class{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em;font-weight:500}
+.dev-id{display:flex;flex-direction:column;gap:1px;min-width:0}
+.dev-name{font-weight:500;font-size:12px}
+.dev-host{font-family:var(--t-mono);font-size:10.5px;color:var(--text3)}
+.dev-stat{font-family:var(--t-mono);font-size:11px}
+.dev-status{display:flex;align-items:center;gap:6px;font-size:11px}
+
+/* footer */
+.footer{
+  padding:14px 22px;
+  font-size:10.5px;color:var(--text3);
+  border-top:0.5px solid var(--border);
+  display:flex;justify-content:space-between;
+  font-family:var(--t-mono);
+}
+
+/* responsive */
+@media (max-width:1100px){
+  .alert-detail{grid-template-columns:1fr}
+  .action-card{position:static}
+  .kpi-strip{grid-template-columns:repeat(3,1fr)}
+  .dc-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:780px){
+  .shell{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .kpi-strip{grid-template-columns:repeat(2,1fr)}
+  .span-3,.span-4,.span-6,.span-8{grid-column:span 12}
+}
+
+/* small icon glyphs (no emoji) */
+.g{display:inline-block;width:14px;height:14px;flex-shrink:0}
+
+/* ===== handoff context bar (appears at top when arriving from biz dashboard) ===== */
+.handoff{
+  display:none;
+  align-items:center;gap:10px;
+  padding:8px 22px;
+  background:linear-gradient(90deg, rgba(160,123,31,0.08), rgba(160,123,31,0.02));
+  border-bottom:0.5px solid var(--border);
+  font-size:11.5px;
+  color:var(--text2);
+}
+.handoff.show{display:flex}
+.handoff-mark{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:10px;text-transform:uppercase;letter-spacing:0.06em;
+  padding:2px 8px;border-radius:9px;
+  background:#a07b1f22;color:#d4a849;
+  border:0.5px solid #a07b1f55;
+  font-weight:600;
+}
+.handoff-mark::before{
+  content:'';width:5px;height:5px;border-radius:50%;background:#d4a849;
+}
+.handoff-text{flex:1}
+.handoff-text strong{color:var(--text);font-weight:500}
+.handoff-back{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11.5px;color:var(--text2);font-weight:500;
+  padding:4px 10px;border-radius:5px;
+  border:0.5px solid var(--border2);
+  background:var(--surface);
+  cursor:pointer;
+}
+.handoff-back:hover{color:var(--text);border-color:var(--border3);background:var(--surface2)}
+.handoff-close{
+  width:22px;height:22px;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;
+  color:var(--text3);font-size:13px;
+  cursor:pointer;
+}
+.handoff-close:hover{color:var(--text);background:var(--surface2)}
+
+/* business-impact link in alert detail (reverse handoff) */
+.biz-link{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:500;
+  color:#d4a849;
+  padding:3px 9px;border-radius:5px;
+  background:#a07b1f1a;
+  border:0.5px solid #a07b1f44;
+  cursor:pointer;
+  margin-left:6px;
+}
+.biz-link:hover{background:#a07b1f33}
+.biz-link svg{width:10px;height:10px}
+/* ===== NL QUERY BAR (IT) ===== */
+.nl-bar{
+  position:relative;
+  flex:1;max-width:520px;
+}
+.nl-input{
+  display:flex;align-items:center;gap:9px;
+  padding:7px 14px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;
+  font-size:12px;color:var(--text2);
+  cursor:text;
+}
+.nl-input:hover{border-color:var(--border3)}
+.nl-input.focused{border-color:var(--teal);box-shadow:0 0 0 3px rgba(62,193,164,0.10)}
+.nl-input svg{width:13px;height:13px;color:var(--text3)}
+.nl-input input{
+  border:none;outline:none;background:transparent;
+  flex:1;font-size:12px;color:var(--text);font-family:var(--t-sans);
+}
+.nl-input input::placeholder{color:var(--text3)}
+.nl-key{
+  font-family:var(--t-mono);font-size:9.5px;
+  background:var(--surface2);color:var(--text3);
+  padding:2px 6px;border-radius:3px;border:1px solid var(--border2);
+}
+.nl-prefix{
+  font-size:9.5px;color:var(--teal);font-weight:600;
+  text-transform:uppercase;letter-spacing:0.06em;
+  padding-right:7px;border-right:1px solid var(--border2);
+  margin-right:2px;
+}
+.nl-panel{
+  position:absolute;top:calc(100% + 6px);left:0;right:0;
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:10px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.40);
+  max-height:520px;overflow:hidden;
+  z-index:30;display:none;
+}
+.nl-panel.open{display:flex;flex-direction:column}
+.nl-suggestions{padding:7px}
+.nl-sugg-l{
+  font-size:9px;color:var(--text3);text-transform:uppercase;
+  letter-spacing:0.08em;font-weight:600;padding:8px 10px 4px;
+}
+.nl-sugg{
+  padding:7px 10px;border-radius:5px;
+  font-size:12px;color:var(--text2);
+  cursor:pointer;display:flex;align-items:center;gap:8px;
+}
+.nl-sugg:hover{background:var(--surface2);color:var(--text)}
+.nl-sugg svg{width:11px;height:11px;color:var(--text3);flex-shrink:0}
+.nl-sugg em{color:var(--teal);font-style:normal;font-weight:600;font-size:10.5px;margin-left:auto}
+.nl-conv{flex:1;overflow-y:auto;padding:14px 18px 0;display:none}
+.nl-conv.show{display:block}
+.nl-msg{margin-bottom:14px}
+.nl-msg.user{
+  font-size:14px;font-weight:600;color:var(--text);
+  padding-bottom:10px;border-bottom:1px solid var(--border);
+}
+.nl-msg.user::before{content:'❯ ';color:var(--teal)}
+.nl-msg.lumina{font-size:12.5px;color:var(--text);line-height:1.6}
+.nl-msg.lumina .src{
+  display:flex;align-items:center;gap:6px;
+  font-size:9px;color:var(--teal);text-transform:uppercase;
+  letter-spacing:0.08em;font-weight:600;margin-bottom:7px;
+}
+.nl-msg.lumina .src::before{
+  content:'';width:6px;height:6px;border-radius:50%;background:var(--teal);
+  animation:pulse 1.6s ease-in-out infinite;
+}
+.nl-msg.lumina strong{font-weight:600;color:var(--text)}
+.nl-msg.lumina .nl-data{
+  margin-top:10px;padding:10px 12px;
+  background:var(--teal-bg);
+  border:1px solid var(--teal-dim);
+  border-radius:6px;
+  font-family:var(--t-mono);font-size:11px;color:var(--text);
+  display:flex;flex-direction:column;gap:5px;
+}
+.nl-msg.lumina .nl-data-row{display:flex;justify-content:space-between;gap:14px}
+.nl-msg.lumina .nl-data-l{color:var(--text2)}
+.nl-typing{display:inline-flex;gap:3px;align-items:center}
+.nl-typing span{
+  width:5px;height:5px;border-radius:50%;background:var(--text3);
+  animation:bounce 1.2s ease-in-out infinite;
+}
+.nl-typing span:nth-child(2){animation-delay:0.15s}
+.nl-typing span:nth-child(3){animation-delay:0.30s}
+@keyframes bounce{0%,80%,100%{transform:scale(0.6);opacity:0.4}40%{transform:scale(1);opacity:1}}
+.nl-foot{
+  border-top:1px solid var(--border);
+  padding:8px 12px;
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:10.5px;color:var(--text3);
+}
+.nl-foot button{font-size:10.5px;color:var(--text3);font-weight:500;cursor:pointer;background:none;border:none}
+.nl-foot button:hover{color:var(--text)}
+
+/* ===== SIM TOGGLE (IT) ===== */
+.sim-toggle{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:5px 11px 5px 8px;
+  border-radius:18px;
+  border:1px solid var(--border);
+  background:var(--surface);
+  font-size:11px;font-weight:500;color:var(--text2);
+  cursor:pointer;
+  font-family:var(--t-sans);
+}
+.sim-toggle:hover{border-color:var(--border3)}
+.sim-toggle.live{
+  background:var(--green-bg);
+  color:var(--green);
+  border-color:var(--green-dim);
+}
+.sim-toggle .sim-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--text3);
+}
+.sim-toggle.live .sim-dot{
+  background:var(--green);animation:pulse 1.6s ease-in-out infinite;
+}
+.sim-clock{font-family:var(--t-mono);font-size:10px;font-weight:400;opacity:0.85}
+
+/* ===== EVENT TICKER (IT) ===== */
+.it-ticker{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  margin-bottom:16px;
+  overflow:hidden;
+}
+.it-ticker-head{
+  display:flex;align-items:center;gap:9px;
+  padding:8px 14px;
+  background:var(--surface2);
+  border-bottom:1px solid var(--border);
+  font-size:10px;color:var(--text3);
+  text-transform:uppercase;letter-spacing:0.08em;font-weight:600;
+}
+.it-ticker-head .live-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--green);
+  animation:pulse 1.6s ease-in-out infinite;flex-shrink:0;
+}
+.it-ticker-head .ticker-count{
+  margin-left:auto;font-family:var(--t-mono);font-size:10px;color:var(--text2);
+  font-weight:500;letter-spacing:0;text-transform:none;
+}
+.it-ticker-body{
+  height:48px;overflow:hidden;position:relative;
+}
+.it-ticker-row{
+  display:grid;
+  grid-template-columns:60px 80px 100px 1fr 80px;
+  gap:14px;align-items:center;
+  padding:6px 14px;
+  font-size:11.5px;
+  border-bottom:1px solid var(--border);
+  animation:tickerSlide .35s ease-out;
+  font-family:var(--t-mono);
+}
+@keyframes tickerSlide{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.it-ticker-time{font-size:10px;color:var(--text3)}
+.it-ticker-sev{
+  font-size:9.5px;font-weight:700;
+  padding:1px 7px;border-radius:8px;
+  text-align:center;text-transform:uppercase;letter-spacing:0.04em;
+  font-family:var(--t-sans);
+}
+.it-ticker-sev.info{background:var(--blue-bg);color:var(--blue)}
+.it-ticker-sev.warn{background:var(--amber-bg);color:var(--amber)}
+.it-ticker-sev.crit{background:var(--red-bg);color:var(--red)}
+.it-ticker-sev.ok{background:var(--green-bg);color:var(--green)}
+.it-ticker-sev.agent{background:var(--teal-bg);color:var(--teal)}
+.it-ticker-prop{color:var(--text2);font-family:var(--t-sans);font-weight:500}
+.it-ticker-msg{color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--t-sans)}
+.it-ticker-msg strong{font-weight:600}
+.it-ticker-meta{color:var(--text3);text-align:right;font-size:10px}
+
+/* floating alert for IT */
+.float-alerts-it{
+  position:fixed;
+  top:80px;right:24px;
+  width:340px;z-index:100;
+  display:flex;flex-direction:column;gap:10px;
+  pointer-events:none;
+}
+.float-alert-it{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-left:3px solid var(--amber);
+  border-radius:8px;
+  padding:13px 16px;
+  box-shadow:0 8px 28px rgba(0,0,0,0.45);
+  font-size:12px;pointer-events:auto;
+  cursor:pointer;
+  animation:floatIn .35s ease-out;
+}
+@keyframes floatIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+.float-alert-it.crit{border-left-color:var(--red)}
+.float-alert-it.warn{border-left-color:var(--amber)}
+.float-alert-it.info{border-left-color:var(--blue)}
+.float-alert-it.ok{border-left-color:var(--green)}
+.float-alert-it.agent{border-left-color:var(--teal)}
+.float-alert-it .float-h{
+  font-size:13px;font-weight:600;margin-bottom:5px;line-height:1.3;color:var(--text);
+}
+.float-alert-it .float-d{font-size:11.5px;color:var(--text2);line-height:1.5}
+.float-alert-it .float-d strong{color:var(--text);font-weight:600}
+.float-alert-it .float-meta{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:9px;padding-top:9px;border-top:1px solid var(--border);
+  font-size:10px;color:var(--text3);font-family:var(--t-mono);
+}
+.float-alert-it .float-meta a{
+  color:var(--teal);font-weight:600;text-transform:uppercase;
+  letter-spacing:0.05em;font-family:var(--t-sans);font-size:10px;
+}
+
+/* ===== STUB-PAGE BUILD-OUTS ===== */
+
+/* Generic page-head used across new pages */
+.page-content-grid{display:grid;gap:16px}
+.kpi-row{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;
+  margin-bottom:16px;
+}
+.kpi-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:14px 18px;
+}
+.kpi-l{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;font-weight:600}
+.kpi-v{
+  font-size:24px;font-weight:600;letter-spacing:-0.02em;
+  margin-top:6px;font-family:var(--t-mono);
+  font-feature-settings:"tnum";
+}
+.kpi-d{font-size:11px;color:var(--text3);margin-top:3px}
+.kpi-d.up{color:var(--green)}
+.kpi-d.dn{color:var(--red)}
+
+/* table common */
+.it-table{width:100%;border-collapse:collapse;font-family:var(--t-sans)}
+.it-table th{
+  font-size:10px;color:var(--text3);
+  text-transform:uppercase;letter-spacing:0.06em;font-weight:600;
+  padding:10px 14px;text-align:left;
+  background:var(--surface2);
+  border-bottom:1px solid var(--border);
+  white-space:nowrap;cursor:pointer;
+}
+.it-table td{
+  padding:10px 14px;
+  border-bottom:1px solid var(--border);
+  font-size:12px;color:var(--text);
+  vertical-align:middle;
+}
+.it-table tr:last-child td{border-bottom:none}
+.it-table tbody tr:hover{background:var(--surface2)}
+.it-table .num{font-family:var(--t-mono);text-align:right}
+.it-table .mono{font-family:var(--t-mono);font-size:11px}
+
+.it-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+}
+.it-card-head{
+  padding:13px 18px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.it-card-title{font-size:13px;font-weight:600;color:var(--text)}
+.it-card-sub{font-size:10.5px;color:var(--text3);margin-top:1px}
+
+.sev-pill{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:9.5px;font-weight:700;
+  padding:2px 8px;border-radius:9px;
+  text-transform:uppercase;letter-spacing:0.04em;
+  font-family:var(--t-sans);
+}
+.sev-pill.crit{background:var(--red-bg);color:var(--red);border:1px solid var(--red-dim)}
+.sev-pill.warn{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-dim)}
+.sev-pill.info{background:var(--blue-bg);color:var(--blue)}
+.sev-pill.ok{background:var(--green-bg);color:var(--green);border:1px solid var(--green-dim)}
+.sev-pill.agent{background:var(--teal-bg);color:var(--teal);border:1px solid var(--teal-dim)}
+
+.status-dot{
+  display:inline-block;width:7px;height:7px;border-radius:50%;
+  margin-right:5px;vertical-align:middle;
+}
+.status-dot.ok{background:var(--green)}
+.status-dot.warn{background:var(--amber)}
+.status-dot.crit{background:var(--red);animation:pulse 1.6s ease-in-out infinite}
+.status-dot.dim{background:var(--text4)}
+
+/* gauge for SLA tile */
+.sla-gauge{
+  position:relative;height:8px;background:var(--surface2);
+  border-radius:4px;overflow:hidden;margin-top:8px;
+}
+.sla-gauge-fill{height:100%;border-radius:4px;transition:width .4s ease}
+.sla-gauge-fill.ok{background:var(--green)}
+.sla-gauge-fill.warn{background:var(--amber)}
+.sla-gauge-fill.crit{background:var(--red)}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ============== SIDEBAR ============== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">
+        <div class="brand-glyph">T</div>
+        <div>
+          <div class="brand-name">Estate IT</div>
+        </div>
+      </div>
+      <div class="brand-sub">Thwaites · 7 sites</div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-group">
+        <div class="nav-label">Operational</div>
+        <div class="nav-item active" data-view="estate">
+          <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>
+          Estate
+          <span class="nav-badge">3</span>
+        </div>
+        <div class="nav-item" data-view="alerts">
+          <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 13l5-10 5 10H3z"/><path d="M8 7v3M8 11.5v.5"/></svg>
+          Alerts
+          <span class="nav-badge warn">7</span>
+        </div>
+        <div class="nav-item" data-view="events">
+          <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 4h12M2 8h8M2 12h10"/></svg>
+          Live events
+          <span class="nav-badge live">live</span>
+        </div>
+        <div class="nav-item" data-view="oncall">
+          <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="6" r="3"/><path d="M2 14c.5-2.5 3-4 6-4s5.5 1.5 6 4"/></svg>
+          On-call
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-label">Service</div>
+        <div class="nav-item" data-view="wakeup">
+          <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="5"/><path d="M8 5v3l2 2" stroke-linecap="round"/></svg>
+          Wake-up calls
+          <span class="nav-badge warn">3</span>
+        </div>
+        <div class="nav-item" data-view="maintenance">
+          <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13 3l-2 2-1.5-1.5 2-2A3 3 0 003 5.5L1 10l2 2 4-2a3 3 0 104.5-4.5L13 3z"/></svg>
+          Maintenance
+          <span class="nav-badge warn">3</span>
+        </div>
+        <div class="nav-item" data-view="queue">
+          <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="2" width="12" height="12" rx="1.5"/><path d="M5 8h6M5 5h6M5 11h4" stroke-linecap="round"/></svg>
+          Event queue
+          <span class="nav-badge warn">6</span>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-label">Estate</div>
+        <div class="nav-item" data-view="devices">
+          <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="7" rx="1"/><path d="M5 13h6M8 10v3"/></svg>
+          Device estate
+        </div>
+        <div class="nav-item" data-view="integrations">
+          <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="3" cy="8" r="1.6"/><circle cx="13" cy="4" r="1.6"/><circle cx="13" cy="12" r="1.6"/><path d="M4.5 8H8M8 8V4.5h3M8 8v3.5h3"/></svg>
+          Integrations
+          <span class="nav-badge warn">1</span>
+        </div>
+        <div class="nav-item" data-view="agents" onclick="event.stopPropagation();window.location.href='agent_audit.html?from=it'">
+          <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="5"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg>
+          Agent activity
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-label">Strategic</div>
+        <div class="nav-item" data-view="exec">
+          <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 13l4-4 3 3 5-7"/><path d="M11 5h3v3"/></svg>
+          Executive
+        </div>
+        <div class="nav-item" data-view="risk">
+          <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 1l6 3v4c0 4-3 6-6 7-3-1-6-3-6-7V4l6-3z"/></svg>
+          Risk &amp; debt
+        </div>
+        <div class="nav-item" data-view="kpi">
+          <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="9" width="3" height="5"/><rect x="6.5" y="5" width="3" height="9"/><rect x="11" y="2" width="3" height="12"/></svg>
+          KPIs &amp; SLAs
+        </div>
+        <div class="nav-item" data-view="rules">
+          <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2a5 5 0 015 5v2l1 2H2l1-2V7a5 5 0 015-5z"/><path d="M6.5 13a1.5 1.5 0 003 0"/></svg>
+          Alert rules
+        </div>
+      </div>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="user-pill">
+        <div class="avatar">JM</div>
+        <div>
+          <div class="user-name">J. Makin</div>
+          <div class="user-role">Estate IT lead</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+
+  <!-- ============== MAIN ============== -->
+  <div class="main">
+
+    <!-- HANDOFF CONTEXT (shown only when navigated from business dashboard) -->
+    <div class="handoff" id="handoff-bar">
+      <span class="handoff-mark">From business</span>
+      <span class="handoff-text" id="handoff-text">
+        Opened from <strong>Cottons Hotel · Today</strong> · drift card "<strong>Reception answer rate 3 days below standard</strong>"
+      </span>
+      <button class="handoff-back" id="handoff-back">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="width:11px;height:11px"><path d="M10 3L5 8l5 5"/></svg>
+        Back to business view
+      </button>
+      <button class="handoff-close" id="handoff-close" title="Dismiss">×</button>
+    </div>
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="crumbs" id="crumbs">
+        <span class="crumb cur">Estate</span>
+      </div>
+
+      <!-- NL Query Bar -->
+      <div class="nl-bar" id="nl-bar">
+        <div class="nl-input" id="nl-input-wrap">
+          <span class="nl-prefix">Lumina</span>
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg>
+          <input id="nl-input" type="text" placeholder="Ask anything about the estate…" autocomplete="off"/>
+          <span class="nl-key">⌘K</span>
+        </div>
+        <div class="nl-panel" id="nl-panel">
+          <div class="nl-suggestions" id="nl-suggs">
+            <div class="nl-sugg-l">Try asking</div>
+            <div class="nl-sugg" data-q="Which devices are flapping the most this week?"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 8l3-3v2h6V5l3 3-3 3v-2H5v2L2 8z"/></svg> Which devices are flapping the most this week? <em>diagnostic</em></div>
+            <div class="nl-sugg" data-q="What's our MTTR trend?"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 11l3-3 3 3 4-5"/></svg> What's our MTTR trend? <em>trend</em></div>
+            <div class="nl-sugg" data-q="Which integration has been dormant longest?"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg> Which integration has been dormant longest? <em>operations</em></div>
+            <div class="nl-sugg" data-q="What did agents auto-fix today?"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 8l3 3 7-8"/></svg> What did agents auto-fix today? <em>agent</em></div>
+            <div class="nl-sugg" data-q="Show wake-up call failures across the estate"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="5"/><path d="M8 5v3l2 2"/></svg> Show wake-up call failures across the estate <em>SLA</em></div>
+            <div class="nl-sugg" data-q="Which property has the most open P1 alerts?"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 1l7 13H1L8 1z"/><path d="M8 6v4M8 12v.5"/></svg> Which property has the most open P1 alerts? <em>severity</em></div>
+          </div>
+          <div class="nl-conv" id="nl-conv"></div>
+          <div class="nl-foot">
+            <span>Lumina · powered by event spine</span>
+            <button id="nl-clear">Clear</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <button class="sim-toggle" id="sim-toggle" title="Toggle live simulation">
+          <span class="sim-dot"></span>
+          <span id="sim-label">Static</span>
+          <span class="sim-clock" id="sim-clock">0s</span>
+        </button>
+        <button class="icon-btn" title="Notifications">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 12V8a5 5 0 1110 0v4l1 1H2l1-1z"/><path d="M6.5 14a1.5 1.5 0 003 0"/></svg>
+        </button>
+        <button class="icon-btn" id="theme-toggle" title="Toggle theme">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13 9.5A5 5 0 016.5 3a5 5 0 100 10 5 5 0 006.5-3.5z"/></svg>
+        </button>
+        <div class="clock" id="clock">17:42:11</div>
+      </div>
+    </div>
+
+
+    <!-- floating alerts container -->
+    <div class="float-alerts-it" id="float-alerts-it"></div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+
+      <!-- ====== ESTATE VIEW ====== -->
+      <div class="page active" id="page-estate">
+        <div class="page-head">
+          <div>
+            <div class="page-h1">Estate</div>
+            <div class="page-sub">Real-time health across 7 properties · 35 integrations · 248 monitored devices</div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" style="width:11px;height:11px"><path d="M2 8h12M8 2v12"/></svg> Add property</button>
+            <button class="btn"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" style="width:11px;height:11px"><path d="M8 2v8M5 7l3 3 3-3M2 12v2h12v-2"/></svg> Export</button>
+            <button class="btn btn-prime">Acknowledge all</button>
+          </div>
+        </div>
+
+        <!-- Live event ticker -->
+        <div class="it-ticker" id="it-ticker">
+          <div class="it-ticker-head">
+            <span class="live-dot"></span>
+            <span>Live event stream</span>
+            <span class="ticker-count" id="it-ticker-count">14 events / min · normal</span>
+          </div>
+          <div class="it-ticker-body" id="it-ticker-body">
+            <div class="it-ticker-row">
+              <span class="it-ticker-time">17:42:08</span>
+              <span><span class="it-ticker-sev info">SIP</span></span>
+              <span class="it-ticker-prop">Solent</span>
+              <span class="it-ticker-msg"><strong>SIP REGISTER</strong> dect-base-04 · ext 3041 → softswitch · 15ms</span>
+              <span class="it-ticker-meta">200 OK</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI strip -->
+        <div class="kpi-strip">
+          <div class="kpi">
+            <div class="kpi-l">Estate health</div>
+            <div class="kpi-v amber">87.4</div>
+            <div class="kpi-d"><span class="delta-dn">▼ 4.2</span> vs 7d avg</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-l">Sites online</div>
+            <div class="kpi-v green">6<span style="color:var(--text3);font-size:18px">/7</span></div>
+            <div class="kpi-d">Langdale degraded</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-l">Open P1</div>
+            <div class="kpi-v red">3</div>
+            <div class="kpi-d">2 acknowledged</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-l">MTTR (24h)</div>
+            <div class="kpi-v">22<span style="color:var(--text3);font-size:18px">m</span></div>
+            <div class="kpi-d"><span class="delta-up">▲</span> within target</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-l">Agent auto-fix</div>
+            <div class="kpi-v green">94<span style="color:var(--text3);font-size:18px">%</span></div>
+            <div class="kpi-d">17 of 18 today</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-l">Wake-up SLA</div>
+            <div class="kpi-v amber">93.6<span style="color:var(--text3);font-size:18px">%</span></div>
+            <div class="kpi-d">target 98%</div>
+          </div>
+        </div>
+
+        <!-- Alert queue -->
+        <div class="alert-queue">
+          <div class="aq-head">
+            <div class="aq-title">
+              Active alerts
+              <span class="aq-title-count">7 open · 2 acknowledged</span>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center">
+              <button class="filter-pill active">All</button>
+              <button class="filter-pill">P1</button>
+              <button class="filter-pill">P2</button>
+              <button class="filter-pill">Unack</button>
+            </div>
+          </div>
+          <div class="aq-list" id="alert-list">
+            <!-- rows injected -->
+          </div>
+        </div>
+
+        <!-- Estate controls -->
+        <div class="estate-controls">
+          <div class="filter-row">
+            <span style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-right:4px">Sort</span>
+            <button class="filter-pill active">Worst first</button>
+            <button class="filter-pill">Name</button>
+            <button class="filter-pill">Brand</button>
+            <button class="filter-pill">Region</button>
+          </div>
+          <div class="filter-row">
+            <span class="chip dim">7 sites</span>
+            <span class="chip red">1 critical</span>
+            <span class="chip amber">2 warn</span>
+            <span class="chip green">4 healthy</span>
+          </div>
+        </div>
+
+        <!-- Estate grid -->
+        <div class="estate-grid" id="estate-grid">
+          <!-- cards injected -->
+        </div>
+      </div>
+
+
+      <!-- ====== ALERT DETAIL VIEW ====== -->
+      <div class="page" id="page-alert">
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <button class="btn btn-ghost" data-back="estate">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" style="width:11px;height:11px"><path d="M10 3L5 8l5 5"/></svg>
+            Back to estate
+          </button>
+          <div style="display:flex;gap:6px">
+            <button class="btn">Snooze</button>
+            <button class="btn">Reassign</button>
+            <button class="btn btn-danger">Page on-call</button>
+          </div>
+        </div>
+
+        <!-- Alert hero -->
+        <div class="alert-hero p1" style="margin-bottom:14px">
+          <div class="hero-row1">
+            <span class="chip red"><span class="dot red pulsing" style="margin-right:0"></span> P1 · Critical</span>
+            <span class="chip dim">ALR-2026-0419-0731</span>
+            <span class="agent-tag">Agent triaged</span>
+            <span class="chip teal">Auto-fix authorized</span>
+            <span style="margin-left:auto;font-size:11px;color:var(--text3);font-family:var(--t-mono)">opened 17:31 · 11m ago</span>
+          </div>
+          <div class="hero-h">DECT registrations dropped 12 → 4 at Cottons Hotel Reception</div>
+          <div class="hero-meta">
+            <div class="hero-meta-item"><span class="hero-meta-l">Site</span><span class="hero-meta-v">Cottons Hotel</span></div>
+            <div class="hero-meta-item"><span class="hero-meta-l">Device</span><span class="hero-meta-v mono" style="font-size:11.5px">dect-bs-04.cottons.thwaites.local</span></div>
+            <div class="hero-meta-item"><span class="hero-meta-l">Class</span><span class="hero-meta-v">DECT base station</span></div>
+            <div class="hero-meta-item"><span class="hero-meta-l">Owner</span><span class="hero-meta-v">A. Hollet (on-call)</span></div>
+          </div>
+        </div>
+
+        <div class="alert-detail">
+
+          <div class="ad-main">
+
+            <!-- Causal chain -->
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">
+                  <span class="panel-title-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="4" cy="4" r="2"/><circle cx="12" cy="12" r="2"/><path d="M5.5 5.5l5 5"/></svg></span>
+                  Causal chain
+                </div>
+                <span class="chip dim">4 tiers</span>
+              </div>
+              <div class="panel-body">
+                <div class="chain">
+
+                  <div class="chain-row">
+                    <div class="chain-tier"><span class="chain-tier-num">1</span> Element</div>
+                    <div class="chain-content">
+                      <div class="chain-h">PoE switch port flapping</div>
+                      <div class="chain-d">Port <code>1/0/14</code> on <code>sw-edge-01.cottons</code> has flapped 4 times in the last 11 minutes. Power negotiation failing on each retry. Upstream PoE budget healthy (38W of 720W).</div>
+                      <div class="chain-meta">
+                        <span>last flap 17:39:42</span>
+                        <span>uptime 14d</span>
+                        <span>vendor: Aruba CX 6300</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="chain-row">
+                    <div class="chain-tier"><span class="chain-tier-num">2</span> Signal</div>
+                    <div class="chain-content">
+                      <div class="chain-h">SIP registrations dropped from 12 to 4</div>
+                      <div class="chain-d">DECT base station <code>dect-bs-04</code> lost power-cycle handshake; 8 of 12 handsets failed to re-register on the BroadSoft cluster. Baseline for Tuesday 17:30 is 11.8 ± 0.4 registrations.</div>
+                      <div class="signal-spark"><canvas id="signalSpark"></canvas></div>
+                      <div class="chain-meta">
+                        <span>deviation: −7.8σ</span>
+                        <span>baseline window: 12w · same hour</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="chain-row">
+                    <div class="chain-tier"><span class="chain-tier-num">3</span> Business KPI</div>
+                    <div class="chain-content">
+                      <div class="chain-h">Reception answer rate degrading</div>
+                      <div class="chain-d">External call answer rate at Cottons fallen from 78% to 41% in the last 9 minutes. Currently 6 of last 14 calls deflected to voicemail; baseline is &lt;1 in 10. Hunt group <code>601 → Reservations</code> bypassing 4 unreachable handsets.</div>
+                      <div class="chain-meta">
+                        <span>since 17:33</span>
+                        <span>14 calls · 6 to VM</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="chain-row">
+                    <div class="chain-tier"><span class="chain-tier-num">4</span> Consequence</div>
+                    <div class="chain-content">
+                      <div class="chain-h">Direct booking risk · est. £180–340 per hour
+                        <a class="biz-link" id="open-in-biz" href="#">
+                          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 11L11 5M6 5h5v5"/></svg>
+                          View in business dashboard
+                        </a>
+                      </div>
+                      <div class="chain-d">Cottons reservations team unreachable on incoming bookings. Historical conversion data: 1 in 3 voicemail-deflected booking calls do not call back. Estimated revenue exposure if unresolved by 18:00 = <strong>£540 (90% CI £180–940)</strong>.</div>
+                      <div class="chain-meta">
+                        <span>model: gbm-revenue-v3</span>
+                        <span>confidence 0.78</span>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <!-- Agent reasoning -->
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">
+                  <span class="panel-title-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6"/><circle cx="8" cy="8" r="2.5" fill="currentColor"/></svg></span>
+                  Agent reasoning
+                </div>
+                <span class="chip teal">Confidence 0.84</span>
+              </div>
+              <div class="panel-body">
+                <div class="reasoning">
+                  <div class="reasoning-h">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 1v3M8 12v3M1 8h3M12 8h3M3 3l2 2M11 11l2 2M3 13l2-2M11 5l2-2"/></svg>
+                    Network-ops agent · diagnosis
+                  </div>
+                  <div class="reasoning-body">
+                    Pattern matches a recurring fault on this exact port — <strong>2026-02-11 14:22</strong> and <strong>2025-11-08 09:45</strong> both showed the same signature: DECT base station power-renegotiation failure following an 802.3at LLDP refresh. In both cases a port power-cycle resolved within 90 seconds without follow-up. PoE chip on the base unit is approaching its 4-year MTBF; recommend hardware replacement within 30 days.
+                  </div>
+                  <div class="reasoning-meta">
+                    <span>matched events: <strong>2</strong></span>
+                    <span>baseline data: <strong>12 weeks</strong></span>
+                    <span>model: <strong>causal-rca-v2.1</strong></span>
+                    <span>tokens: <strong>2,840</strong></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Audit / timeline -->
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">
+                  <span class="panel-title-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1.5"/></svg></span>
+                  Timeline
+                </div>
+                <button class="btn btn-ghost" style="padding:3px 8px;font-size:11px">View full audit</button>
+              </div>
+              <div class="runbook">
+                <div class="runbook-row done"><span class="runbook-num">1</span><span class="runbook-text">Port flap detected on sw-edge-01:1/0/14 (signal threshold)</span><span class="runbook-time">17:31:08</span></div>
+                <div class="runbook-row done"><span class="runbook-num">2</span><span class="runbook-text">Agent ingested 12w baseline, classified as known pattern</span><span class="runbook-time">17:31:14</span></div>
+                <div class="runbook-row done"><span class="runbook-num">3</span><span class="runbook-text">Causal chain assembled (4 tiers · revenue model attached)</span><span class="runbook-time">17:31:18</span></div>
+                <div class="runbook-row done"><span class="runbook-num">4</span><span class="runbook-text">Severity raised P2 → P1 on KPI breach (answer rate &lt;50%)</span><span class="runbook-time">17:33:50</span></div>
+                <div class="runbook-row done"><span class="runbook-num">5</span><span class="runbook-text">On-call notified: A. Hollet (SMS · push)</span><span class="runbook-time">17:34:02</span></div>
+                <div class="runbook-row"><span class="runbook-num">6</span><span class="runbook-text">Awaiting auto-fix authorization or human override</span><span class="runbook-time">—</span></div>
+              </div>
+            </div>
+
+          </div>
+
+
+          <!-- RIGHT: Action panel -->
+          <div>
+            <div class="action-card">
+              <div class="action-head">
+                <div class="action-eyebrow">Recommended action</div>
+                <div class="action-title">Power-cycle PoE port 1/0/14</div>
+                <div class="action-desc">Remote disable then re-enable on <span class="mono">sw-edge-01.cottons</span>. Forces DECT base station to re-handshake. Resolves 96% of matched cases.</div>
+              </div>
+
+              <div class="action-meta-list">
+                <div class="aml-row"><span class="aml-l">ETA</span><span class="aml-v">~ 90 seconds</span></div>
+                <div class="aml-row"><span class="aml-l">Blast radius</span><span class="aml-v">1 port · 0 calls active</span></div>
+                <div class="aml-row"><span class="aml-l">Reversible</span><span class="aml-v">Yes</span></div>
+                <div class="aml-row"><span class="aml-l">Match confidence</span><span class="aml-v">0.84</span></div>
+              </div>
+
+              <div class="auth-block">
+                <div class="auth-row">
+                  <div class="auth-status">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" style="width:11px;height:11px"><path d="M2 8l4 4 8-9"/></svg>
+                    <span>Pre-authorized for this device class</span>
+                  </div>
+                  <a class="auth-link" href="policy_editor.html?view=editor&policy=netops.port_cycle">Edit policy →</a>
+                </div>
+              </div>
+
+              <div class="action-btns">
+                <button class="btn btn-prime">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" style="width:11px;height:11px"><path d="M3 3l10 5-10 5V3z" fill="currentColor"/></svg>
+                  Run auto-fix now
+                </button>
+                <div class="action-secondary-row">
+                  <button class="btn">Run manually</button>
+                  <button class="btn">Defer 5m</button>
+                </div>
+                <button class="btn btn-ghost" style="margin-top:6px;justify-content:center;font-size:11px">View runbook · 4 steps</button>
+              </div>
+            </div>
+
+
+            <!-- on-call card -->
+            <div class="panel" style="margin-top:14px">
+              <div class="panel-head">
+                <div class="panel-title">
+                  <span class="panel-title-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 3c0 0 1 2 2 3s3 2 3 2l2-2 3 3c0 0-1 3-3 3S4 10 2 6s0-3 1-3z"/></svg></span>
+                  On-call
+                </div>
+              </div>
+              <div>
+                <div class="oncall-row">
+                  <div class="avatar" style="background:var(--green-bg);color:var(--green);border-color:var(--green-dim)">AH</div>
+                  <div class="oncall-info">
+                    <div class="oncall-name">A. Hollet</div>
+                    <div class="oncall-role">Primary · Cottons site</div>
+                  </div>
+                  <span class="oncall-status" style="color:var(--green)">ack 1m ago</span>
+                </div>
+                <div class="oncall-row">
+                  <div class="avatar">JM</div>
+                  <div class="oncall-info">
+                    <div class="oncall-name">J. Makin</div>
+                    <div class="oncall-role">Secondary · group</div>
+                  </div>
+                  <span class="oncall-status" style="color:var(--text3)">notified</span>
+                </div>
+                <div class="oncall-row">
+                  <div class="avatar" style="background:var(--surface3)">MS</div>
+                  <div class="oncall-info">
+                    <div class="oncall-name">MSP — Bynet</div>
+                    <div class="oncall-role">Escalation · 30m timer</div>
+                  </div>
+                  <span class="oncall-status" style="color:var(--text3)">standby</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- related -->
+            <div class="panel" style="margin-top:14px">
+              <div class="panel-head">
+                <div class="panel-title">
+                  <span class="panel-title-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 8a6 6 0 1112 0M2 8a6 6 0 0012 0M2 8h12"/></svg></span>
+                  Similar past incidents
+                </div>
+              </div>
+              <div>
+                <div class="oncall-row" style="cursor:pointer">
+                  <div class="oncall-info">
+                    <div class="oncall-name" style="font-size:11.5px">Same port · DECT bs-04 reset</div>
+                    <div class="oncall-role">2026-02-11 · resolved 1m 12s</div>
+                  </div>
+                  <span class="oncall-status" style="color:var(--green)">auto-fixed</span>
+                </div>
+                <div class="oncall-row" style="cursor:pointer">
+                  <div class="oncall-info">
+                    <div class="oncall-name" style="font-size:11.5px">Same port · LLDP renegotiation</div>
+                    <div class="oncall-role">2025-11-08 · resolved 0m 54s</div>
+                  </div>
+                  <span class="oncall-status" style="color:var(--green)">auto-fixed</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+
+      <!-- ====== EXEC VIEW ====== -->
+      <div class="page" id="page-exec">
+
+        <div class="page-head">
+          <div>
+            <div class="page-h1">Executive view</div>
+            <div class="page-sub">Quarterly rollup · Q1 2026 vs Q4 2025 · Thwaites Group · 7 properties</div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" style="width:11px;height:11px"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M5 1v3M11 1v3M2 7h12"/></svg>
+              Q1 2026
+            </button>
+            <button class="btn">vs Q4 2025</button>
+            <button class="btn btn-prime">Export board pack</button>
+          </div>
+        </div>
+
+        <div class="exec-grid">
+
+          <!-- Estate uptime -->
+          <div class="exec-tile span-3">
+            <div class="tile-h">
+              <div class="tile-l">Estate uptime</div>
+              <span class="tile-info" title="Revenue-weighted uptime across all sites and integrations">ⓘ</span>
+            </div>
+            <div class="tile-bignum green">99.42%</div>
+            <div class="tile-cmp"><span class="delta-up">▲ 0.18 pp</span> vs Q4 · target 99.5%</div>
+            <div class="tile-canvas"><canvas id="execUptime"></canvas></div>
+          </div>
+
+          <!-- MTTR -->
+          <div class="exec-tile span-3">
+            <div class="tile-h"><div class="tile-l">MTTR · P1</div><span class="tile-info" title="Mean time to resolve P1 incidents">ⓘ</span></div>
+            <div class="tile-bignum">38<span style="font-size:18px;color:var(--text3)">m</span></div>
+            <div class="tile-cmp"><span class="delta-up">▼ 22m</span> vs Q4 · agent layer impact</div>
+            <div class="tile-canvas"><canvas id="execMttr"></canvas></div>
+          </div>
+
+          <!-- Cost of poor quality -->
+          <div class="exec-tile span-3">
+            <div class="tile-h"><div class="tile-l">Cost of IT-driven loss</div><span class="tile-info" title="Estimated revenue impact of IT incidents">ⓘ</span></div>
+            <div class="tile-bignum amber">£14.2k</div>
+            <div class="tile-cmp"><span class="delta-up">▼ £8.1k</span> vs Q4 · prevented £42k</div>
+            <div class="tile-canvas"><canvas id="execCost"></canvas></div>
+          </div>
+
+          <!-- Tech debt -->
+          <div class="exec-tile span-3">
+            <div class="tile-h"><div class="tile-l">Technical debt index</div><span class="tile-info" title="Weighted score: dormant integrations, unsupported firmware, EoL hardware">ⓘ</span></div>
+            <div class="tile-bignum red">62<span style="font-size:18px;color:var(--text3)">/100</span></div>
+            <div class="tile-cmp"><span class="delta-dn">▲ 4</span> · 3 dormant integrations</div>
+            <div class="tile-canvas"><canvas id="execDebt"></canvas></div>
+          </div>
+
+          <!-- Agent activity summary -->
+          <div class="exec-tile span-6">
+            <div class="tile-h">
+              <div>
+                <div class="tile-l">Agent activity · last 90 days</div>
+                <div style="font-size:11.5px;color:var(--text2);margin-top:3px">Auto-resolved incidents and triage summaries</div>
+              </div>
+              <span class="agent-tag">Active</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-radius:var(--radius);overflow:hidden;margin-top:14px">
+              <div style="background:var(--surface);padding:10px 12px">
+                <div style="font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em">Auto-resolved</div>
+                <div style="font-family:var(--t-mono);font-size:18px;font-weight:500;color:var(--green);margin-top:3px">847</div>
+                <div style="font-size:10.5px;color:var(--text3)">~ 9.4/day</div>
+              </div>
+              <div style="background:var(--surface);padding:10px 12px">
+                <div style="font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em">Triaged · escalated</div>
+                <div style="font-family:var(--t-mono);font-size:18px;font-weight:500;margin-top:3px">214</div>
+                <div style="font-size:10.5px;color:var(--text3)">human acted</div>
+              </div>
+              <div style="background:var(--surface);padding:10px 12px">
+                <div style="font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em">False positive</div>
+                <div style="font-family:var(--t-mono);font-size:18px;font-weight:500;color:var(--amber);margin-top:3px">11</div>
+                <div style="font-size:10.5px;color:var(--text3)">1.0% rate</div>
+              </div>
+              <div style="background:var(--surface);padding:10px 12px">
+                <div style="font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em">Labor displaced</div>
+                <div style="font-family:var(--t-mono);font-size:18px;font-weight:500;margin-top:3px">312<span style="font-size:11px;color:var(--text3)">h</span></div>
+                <div style="font-size:10.5px;color:var(--text3)">~ £8.7k saved</div>
+              </div>
+            </div>
+            <div style="height:90px;margin-top:12px;position:relative"><canvas id="execAgent"></canvas></div>
+          </div>
+
+          <!-- Top problem properties -->
+          <div class="exec-tile span-6">
+            <div class="tile-h">
+              <div>
+                <div class="tile-l">Top problem properties · 90d</div>
+                <div style="font-size:11.5px;color:var(--text2);margin-top:3px">Ranked by P1+P2 incident count</div>
+              </div>
+            </div>
+            <div class="problist" style="margin-top:8px">
+              <div class="prob-row">
+                <div class="prob-rank">1</div>
+                <div><div class="prob-name">Langdale</div><div class="prob-meta">PMS heartbeat · BMS dormant</div></div>
+                <div><div class="prob-bar"><div class="prob-bar-fill" style="width:100%;background:var(--red)"></div></div></div>
+                <div class="prob-num">42</div>
+              </div>
+              <div class="prob-row">
+                <div class="prob-rank">2</div>
+                <div><div class="prob-name">Cottons Hotel</div><div class="prob-meta">Recurring DECT port flap</div></div>
+                <div><div class="prob-bar"><div class="prob-bar-fill" style="width:62%;background:var(--amber)"></div></div></div>
+                <div class="prob-num">26</div>
+              </div>
+              <div class="prob-row">
+                <div class="prob-rank">3</div>
+                <div><div class="prob-name">Solent Hotel</div><div class="prob-meta">Hunt-group config · CF deflection</div></div>
+                <div><div class="prob-bar"><div class="prob-bar-fill" style="width:48%;background:var(--amber)"></div></div></div>
+                <div class="prob-num">20</div>
+              </div>
+              <div class="prob-row">
+                <div class="prob-rank">4</div>
+                <div><div class="prob-name">Aztec Hotel</div><div class="prob-meta">Analogue gateway latency</div></div>
+                <div><div class="prob-bar"><div class="prob-bar-fill" style="width:31%;background:var(--text2)"></div></div></div>
+                <div class="prob-num">13</div>
+              </div>
+              <div class="prob-row">
+                <div class="prob-rank">5</div>
+                <div><div class="prob-name">Thorpe Park</div><div class="prob-meta">Spa hunt 66s ring cycle</div></div>
+                <div><div class="prob-bar"><div class="prob-bar-fill" style="width:24%;background:var(--text2)"></div></div></div>
+                <div class="prob-num">10</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Device class health -->
+          <div class="exec-tile span-12">
+            <div class="tile-h">
+              <div>
+                <div class="tile-l">Device class health · estate-wide</div>
+                <div style="font-size:11.5px;color:var(--text2);margin-top:3px">Devices flagged unhealthy / total deployed · worst-affected site</div>
+              </div>
+              <button class="btn btn-ghost" style="padding:3px 8px;font-size:11px">Refresh roadmap →</button>
+            </div>
+            <div class="dc-grid" style="margin-top:12px">
+              <div class="dc-cell">
+                <div class="dc-name">PBX cluster <span class="chip green">stable</span></div>
+                <div class="dc-stats"><span class="dc-num green">7</span><span class="dc-of">/7</span></div>
+                <div class="dc-worst">All sites on BroadSoft 24.x</div>
+              </div>
+              <div class="dc-cell">
+                <div class="dc-name">FIAS link servers <span class="chip amber">attn</span></div>
+                <div class="dc-stats"><span class="dc-num amber">6</span><span class="dc-of">/7</span></div>
+                <div class="dc-worst">Langdale heartbeat-only since 17:00</div>
+              </div>
+              <div class="dc-cell">
+                <div class="dc-name">DECT base stns <span class="chip amber">1 down</span></div>
+                <div class="dc-stats"><span class="dc-num amber">23</span><span class="dc-of">/24</span></div>
+                <div class="dc-worst">Cottons bs-04 PoE flap recurring</div>
+              </div>
+              <div class="dc-cell">
+                <div class="dc-name">PoE switches <span class="chip green">ok</span></div>
+                <div class="dc-stats"><span class="dc-num">18</span><span class="dc-of">/18</span></div>
+                <div class="dc-worst">All Aruba CX 6300 · firmware OK</div>
+              </div>
+              <div class="dc-cell">
+                <div class="dc-name">Analogue gateways <span class="chip dim">EoL risk</span></div>
+                <div class="dc-stats"><span class="dc-num red">3</span><span class="dc-of">/12</span></div>
+                <div class="dc-worst">VEGAARM units past EoL — refresh</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+      <!-- ====== PROPERTY DETAIL ====== -->
+      <div class="page" id="page-property">
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <button class="btn btn-ghost" data-back="estate">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" style="width:11px;height:11px"><path d="M10 3L5 8l5 5"/></svg>
+            Back to estate
+          </button>
+          <div style="display:flex;gap:6px">
+            <button class="btn">Run diagnostics</button>
+            <button class="btn">Site notes</button>
+            <button class="btn btn-prime">Acknowledge all</button>
+          </div>
+        </div>
+
+        <div class="prop-head">
+          <div class="prop-id">
+            <div class="prop-icon" id="prop-icon">CO</div>
+            <div class="prop-name-block">
+              <div class="page-h1" id="prop-name">Cottons Hotel</div>
+              <div class="page-sub" id="prop-sub">Knutsford · BroadSoft + FIAS · 89 keys · iface group 12</div>
+            </div>
+          </div>
+          <div class="prop-stats">
+            <div><span class="prop-stat-l">Health</span><span class="prop-stat-v" style="color:var(--amber)">71</span></div>
+            <div><span class="prop-stat-l">Open alerts</span><span class="prop-stat-v" style="color:var(--red)">2</span></div>
+            <div><span class="prop-stat-l">Devices</span><span class="prop-stat-v">38</span></div>
+            <div><span class="prop-stat-l">Integrations</span><span class="prop-stat-v">5</span></div>
+            <div><span class="prop-stat-l">MTTR 30d</span><span class="prop-stat-v">19m</span></div>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <div class="tab active">Devices</div>
+          <div class="tab">Integrations</div>
+          <div class="tab">Alerts</div>
+          <div class="tab">Calls &amp; CDR</div>
+          <div class="tab">Wake-ups</div>
+          <div class="tab">Agent activity</div>
+        </div>
+
+        <div class="device-list">
+          <div class="dev-row" style="background:var(--surface2);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;font-weight:500;padding-top:7px;padding-bottom:7px">
+            <div>Class</div><div>Device</div><div>Health</div><div>Last event</div><div>Status</div><div></div>
+          </div>
+          <div class="dev-row">
+            <div class="dev-class">DECT base</div>
+            <div class="dev-id"><span class="dev-name">bs-04 · Reception</span><span class="dev-host">dect-bs-04.cottons.local</span></div>
+            <div class="dev-stat" style="color:var(--red)">28/100</div>
+            <div class="dev-stat">17:39:42</div>
+            <div class="dev-status"><span class="dot red pulsing"></span> 8 handsets unreg</div>
+            <div style="color:var(--text3)">›</div>
+          </div>
+          <div class="dev-row">
+            <div class="dev-class">PoE switch</div>
+            <div class="dev-id"><span class="dev-name">sw-edge-01 · East riser</span><span class="dev-host">sw-edge-01.cottons.local</span></div>
+            <div class="dev-stat" style="color:var(--amber)">82/100</div>
+            <div class="dev-stat">17:39:42</div>
+            <div class="dev-status"><span class="dot amber"></span> port 1/0/14 flap</div>
+            <div style="color:var(--text3)">›</div>
+          </div>
+          <div class="dev-row">
+            <div class="dev-class">PBX</div>
+            <div class="dev-id"><span class="dev-name">BroadSoft cluster</span><span class="dev-host">bw-as-01.cottons.local</span></div>
+            <div class="dev-stat" style="color:var(--green)">99/100</div>
+            <div class="dev-stat">17:42:08</div>
+            <div class="dev-status"><span class="dot green"></span> healthy</div>
+            <div style="color:var(--text3)">›</div>
+          </div>
+          <div class="dev-row">
+            <div class="dev-class">FIAS link</div>
+            <div class="dev-id"><span class="dev-name">FIAS bridge</span><span class="dev-host">fias-srv.cottons.local</span></div>
+            <div class="dev-stat" style="color:var(--green)">96/100</div>
+            <div class="dev-stat">17:41:55</div>
+            <div class="dev-status"><span class="dot green"></span> queue depth 2</div>
+            <div style="color:var(--text3)">›</div>
+          </div>
+          <div class="dev-row">
+            <div class="dev-class">SBC</div>
+            <div class="dev-id"><span class="dev-name">Edge SBC</span><span class="dev-host">sbc-edge.cottons.local</span></div>
+            <div class="dev-stat" style="color:var(--green)">100/100</div>
+            <div class="dev-stat">17:42:01</div>
+            <div class="dev-status"><span class="dot green"></span> 4 trunks reg'd</div>
+            <div style="color:var(--text3)">›</div>
+          </div>
+          <div class="dev-row">
+            <div class="dev-class">BMS ctrl</div>
+            <div class="dev-id"><span class="dev-name">Trend IQ4</span><span class="dev-host">bms.cottons.local</span></div>
+            <div class="dev-stat" style="color:var(--amber)">68/100</div>
+            <div class="dev-stat">14:02:11</div>
+            <div class="dev-status"><span class="dot amber"></span> 6 events queued</div>
+            <div style="color:var(--text3)">›</div>
+          </div>
+          <div class="dev-row">
+            <div class="dev-class">Door locks</div>
+            <div class="dev-id"><span class="dev-name">Salto KS gateway</span><span class="dev-host">salto-gw.cottons.local</span></div>
+            <div class="dev-stat" style="color:var(--green)">98/100</div>
+            <div class="dev-stat">17:41:28</div>
+            <div class="dev-status"><span class="dot green"></span> healthy</div>
+            <div style="color:var(--text3)">›</div>
+          </div>
+          <div class="dev-row">
+            <div class="dev-class">Analogue GW</div>
+            <div class="dev-id"><span class="dev-name">VEGAARM 24-port</span><span class="dev-host">veg-01.cottons.local</span></div>
+            <div class="dev-stat" style="color:var(--amber)">74/100</div>
+            <div class="dev-stat">17:41:00</div>
+            <div class="dev-status"><span class="dot amber"></span> EoL · refresh due</div>
+            <div style="color:var(--text3)">›</div>
+          </div>
+          <div class="dev-row">
+            <div class="dev-class">Wi-Fi ctrl</div>
+            <div class="dev-id"><span class="dev-name">Aruba 9004</span><span class="dev-host">wifi-ctl.cottons.local</span></div>
+            <div class="dev-stat" style="color:var(--green)">94/100</div>
+            <div class="dev-stat">17:42:09</div>
+            <div class="dev-status"><span class="dot green"></span> 142 clients</div>
+            <div style="color:var(--text3)">›</div>
+          </div>
+        </div>
+
+      </div>
+
+
+      <!-- ============== WAKE-UP CALLS ============== -->
+      <div class="page" id="page-wakeup">
+        <div class="page-head">
+          <div>
+            <div class="page-h1">Wake-up calls</div>
+            <div class="page-sub">Delivery, success rate, retries · last 24 hours · all properties</div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn">Today</button>
+            <button class="btn btn-prime">Last 7 days</button>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-l">Scheduled</div>
+            <div class="kpi-v">214</div>
+            <div class="kpi-d">across 7 properties · 24h</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-l">Delivered first try</div>
+            <div class="kpi-v" style="color:var(--green)">208</div>
+            <div class="kpi-d up">97.2% success</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-l">Retries used</div>
+            <div class="kpi-v" style="color:var(--amber)">5</div>
+            <div class="kpi-d">3 succeeded on retry</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-l">Failures</div>
+            <div class="kpi-v" style="color:var(--red)">3</div>
+            <div class="kpi-d dn">Langdale · DECT linkage</div>
+          </div>
+        </div>
+
+        <div class="it-card">
+          <div class="it-card-head">
+            <div>
+              <div class="it-card-title">Recent wake-up activity · last 4 hours</div>
+              <div class="it-card-sub">Delivery confirmation flows from PBX → PMS</div>
+            </div>
+            <button class="btn">Export CSV</button>
+          </div>
+          <table class="it-table">
+            <thead>
+              <tr>
+                <th>Scheduled</th><th>Property</th><th>Room</th><th>Guest</th><th>Status</th><th>Retries</th><th>Delivered</th><th class="num">Latency</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="mono">06:30</td><td>Cottons</td><td class="mono">412</td><td>Mr. Holloway</td><td><span class="sev-pill ok"><span class="status-dot ok"></span>Delivered</span></td><td class="num">0</td><td class="mono">06:30:02</td><td class="num">2s</td></tr>
+              <tr><td class="mono">06:45</td><td>Cottons</td><td class="mono">218</td><td>Ms. Chen</td><td><span class="sev-pill ok"><span class="status-dot ok"></span>Delivered</span></td><td class="num">0</td><td class="mono">06:45:01</td><td class="num">1s</td></tr>
+              <tr><td class="mono">07:00</td><td>Solent</td><td class="mono">307</td><td>Group: CONF2026</td><td><span class="sev-pill ok"><span class="status-dot ok"></span>Delivered</span></td><td class="num">0</td><td class="mono">07:00:03</td><td class="num">3s</td></tr>
+              <tr><td class="mono">07:15</td><td>Langdale</td><td class="mono">204</td><td>Mr. &amp; Mrs. Patel</td><td><span class="sev-pill warn"><span class="status-dot warn"></span>Retry success</span></td><td class="num">2</td><td class="mono">07:17:11</td><td class="num">131s</td></tr>
+              <tr><td class="mono">07:30</td><td>Aztec</td><td class="mono">501</td><td>Sir Whitcombe</td><td><span class="sev-pill ok"><span class="status-dot ok"></span>Delivered</span></td><td class="num">0</td><td class="mono">07:30:00</td><td class="num">0s</td></tr>
+              <tr><td class="mono">07:30</td><td>Langdale</td><td class="mono">115</td><td>Ms. R. Park</td><td><span class="sev-pill crit"><span class="status-dot crit"></span>Failed</span></td><td class="num">3</td><td class="mono">—</td><td class="num">—</td></tr>
+              <tr><td class="mono">07:45</td><td>Kettering</td><td class="mono">412</td><td>Mr. K. Brown</td><td><span class="sev-pill ok"><span class="status-dot ok"></span>Delivered</span></td><td class="num">0</td><td class="mono">07:45:04</td><td class="num">4s</td></tr>
+              <tr><td class="mono">08:00</td><td>Thorpe</td><td class="mono">201</td><td>Yorkshire CC</td><td><span class="sev-pill ok"><span class="status-dot ok"></span>Delivered</span></td><td class="num">0</td><td class="mono">08:00:02</td><td class="num">2s</td></tr>
+              <tr><td class="mono">08:00</td><td>Cottons</td><td class="mono">501</td><td>Mr. Tanaka</td><td><span class="sev-pill warn"><span class="status-dot warn"></span>Retry success</span></td><td class="num">1</td><td class="mono">08:01:18</td><td class="num">78s</td></tr>
+              <tr><td class="mono">08:15</td><td>Langdale</td><td class="mono">218</td><td>Ms. M. Yusuf</td><td><span class="sev-pill crit"><span class="status-dot crit"></span>Failed</span></td><td class="num">3</td><td class="mono">—</td><td class="num">—</td></tr>
+              <tr><td class="mono">08:30</td><td>Solent</td><td class="mono">412</td><td>Mr. J. Holloway</td><td><span class="sev-pill ok"><span class="status-dot ok"></span>Delivered</span></td><td class="num">0</td><td class="mono">08:30:01</td><td class="num">1s</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="it-card" style="margin-top:14px">
+          <div class="it-card-head">
+            <div>
+              <div class="it-card-title">SLA · 7-day rolling</div>
+              <div class="it-card-sub">Wake-up delivery success rate · target ≥ 98%</div>
+            </div>
+          </div>
+          <table class="it-table">
+            <thead>
+              <tr><th>Property</th><th class="num">Scheduled</th><th class="num">Delivered</th><th class="num">Success rate</th><th>SLA</th><th class="num">Target gap</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Solent</td><td class="num">412</td><td class="num">412</td><td class="num">100%</td><td><span class="sev-pill ok">PASS</span></td><td class="num">+2pp</td></tr>
+              <tr><td>Cottons</td><td class="num">368</td><td class="num">365</td><td class="num">99.2%</td><td><span class="sev-pill ok">PASS</span></td><td class="num">+1.2pp</td></tr>
+              <tr><td>Kettering</td><td class="num">298</td><td class="num">297</td><td class="num">99.7%</td><td><span class="sev-pill ok">PASS</span></td><td class="num">+1.7pp</td></tr>
+              <tr><td>Aztec</td><td class="num">281</td><td class="num">280</td><td class="num">99.6%</td><td><span class="sev-pill ok">PASS</span></td><td class="num">+1.6pp</td></tr>
+              <tr><td>Thorpe</td><td class="num">312</td><td class="num">309</td><td class="num">99.0%</td><td><span class="sev-pill ok">PASS</span></td><td class="num">+1.0pp</td></tr>
+              <tr><td>North Lakes</td><td class="num">218</td><td class="num">216</td><td class="num">99.1%</td><td><span class="sev-pill ok">PASS</span></td><td class="num">+1.1pp</td></tr>
+              <tr><td>Langdale</td><td class="num">194</td><td class="num">167</td><td class="num">86.1%</td><td><span class="sev-pill crit">BREACH</span></td><td class="num" style="color:var(--red)">−11.9pp</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+      <!-- ============== MAINTENANCE ============== -->
+      <div class="page" id="page-maintenance">
+        <div class="page-head">
+          <div>
+            <div class="page-h1">Maintenance</div>
+            <div class="page-sub">Open tickets · SLA tracking · auto-routed by Mike</div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn">Open only</button>
+            <button class="btn btn-prime">+ Manual ticket</button>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-l">Open tickets</div>
+            <div class="kpi-v">14</div>
+            <div class="kpi-d">11 auto-routed by Mike</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-l">P1 / P2 / P3</div>
+            <div class="kpi-v"><span style="color:var(--red)">2</span><span style="color:var(--text3);font-size:14px"> · </span><span style="color:var(--amber)">5</span><span style="color:var(--text3);font-size:14px"> · </span><span style="color:var(--green)">7</span></div>
+            <div class="kpi-d">2 nearing SLA breach</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-l">Avg close-out</div>
+            <div class="kpi-v" style="color:var(--green)">3.1h</div>
+            <div class="kpi-d up">target ≤ 4h · pass</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-l">Blocked rooms</div>
+            <div class="kpi-v" style="color:var(--amber)">2</div>
+            <div class="kpi-d">OOO pending parts</div>
+          </div>
+        </div>
+
+        <div class="it-card">
+          <div class="it-card-head">
+            <div>
+              <div class="it-card-title">Open work orders</div>
+              <div class="it-card-sub">Sorted by SLA risk · auto-routed flagged</div>
+            </div>
+          </div>
+          <table class="it-table">
+            <thead>
+              <tr><th>ID</th><th>Property</th><th>Room</th><th>Issue</th><th>Priority</th><th>Logged</th><th>Assigned</th><th>Age</th><th>SLA</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="mono">MNT-2026-1184</td><td>Aztec</td><td class="mono">218</td><td>AC fault — no cool air</td><td><span class="sev-pill crit">P1</span></td><td class="mono">22:08</td><td>Night-eng (auto)</td><td class="num">11h 34m</td><td><span class="sev-pill warn">3h to breach</span></td></tr>
+              <tr><td class="mono">MNT-2026-1183</td><td>Cottons</td><td class="mono">412</td><td>Bathroom drain slow</td><td><span class="sev-pill warn">P2</span></td><td class="mono">07:14</td><td>Day-eng (auto)</td><td class="num">2h 28m</td><td><span class="sev-pill ok">PASS</span></td></tr>
+              <tr><td class="mono">MNT-2026-1182</td><td>Langdale</td><td class="mono">204</td><td>TV no signal</td><td><span class="sev-pill warn">P2</span></td><td class="mono">06:42</td><td>Day-eng (auto)</td><td class="num">3h 0m</td><td><span class="sev-pill warn">1h to breach</span></td></tr>
+              <tr><td class="mono">MNT-2026-1181</td><td>Solent</td><td class="mono">307</td><td>Curtain rail loose</td><td><span class="sev-pill info">P3</span></td><td class="mono">02 May</td><td>Day-eng</td><td class="num">2d 7h</td><td><span class="sev-pill ok">PASS</span></td></tr>
+              <tr><td class="mono">MNT-2026-1180</td><td>Cottons</td><td class="mono">501</td><td>Coffee machine F&amp;B suite</td><td><span class="sev-pill info">P3</span></td><td class="mono">01 May</td><td>F&amp;B</td><td class="num">3d 4h</td><td><span class="sev-pill ok">PASS</span></td></tr>
+              <tr><td class="mono">MNT-2026-1179</td><td>Aztec</td><td class="mono">115</td><td>Door lock unresponsive</td><td><span class="sev-pill crit">P1</span></td><td class="mono">04:18</td><td>Day-eng (auto)</td><td class="num">5h 24m</td><td><span class="sev-pill warn">2h 30m to breach</span></td></tr>
+              <tr><td class="mono">MNT-2026-1178</td><td>Thorpe</td><td class="mono">201</td><td>Bedside lamp fault</td><td><span class="sev-pill info">P3</span></td><td class="mono">02 May</td><td>Day-eng</td><td class="num">2d</td><td><span class="sev-pill ok">PASS</span></td></tr>
+              <tr><td class="mono">MNT-2026-1177</td><td>Langdale</td><td class="mono">218</td><td>Heating not coming on</td><td><span class="sev-pill warn">P2</span></td><td class="mono">07:55</td><td>Day-eng (auto)</td><td class="num">1h 47m</td><td><span class="sev-pill ok">PASS</span></td></tr>
+              <tr><td class="mono">MNT-2026-1176</td><td>Solent</td><td class="mono">412</td><td>Mini-bar fridge warm</td><td><span class="sev-pill info">P3</span></td><td class="mono">01 May</td><td>F&amp;B</td><td class="num">3d 6h</td><td><span class="sev-pill ok">PASS</span></td></tr>
+              <tr><td class="mono">MNT-2026-1175</td><td>N. Lakes</td><td class="mono">307</td><td>Window seal damaged</td><td><span class="sev-pill warn">P2</span></td><td class="mono">02 May</td><td>Contractor (auto)</td><td class="num">2d 11h</td><td><span class="sev-pill ok">PASS</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+      <!-- ============== EVENT QUEUE ============== -->
+      <div class="page" id="page-queue">
+        <div class="page-head">
+          <div>
+            <div class="page-h1">Event queue</div>
+            <div class="page-sub">Stuck or queued events on the spine · replay-eligible · all properties</div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn">Filter by interface</button>
+            <button class="btn btn-prime">Replay all eligible</button>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-l">Queued total</div>
+            <div class="kpi-v" style="color:var(--amber)">23</div>
+            <div class="kpi-d">across 4 interfaces</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-l">Stuck &gt;15 min</div>
+            <div class="kpi-v" style="color:var(--red)">14</div>
+            <div class="kpi-d">12 from Langdale</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-l">Replay eligible</div>
+            <div class="kpi-v" style="color:var(--green)">21</div>
+            <div class="kpi-d">2 require manual review</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-l">Replayed last 24h</div>
+            <div class="kpi-v">147</div>
+            <div class="kpi-d up">all succeeded</div>
+          </div>
+        </div>
+
+        <div class="it-card">
+          <div class="it-card-head">
+            <div>
+              <div class="it-card-title">Queued events · awaiting replay or resolution</div>
+              <div class="it-card-sub">Mostly Langdale's PMS link backlog · agent will replay automatically when link restores</div>
+            </div>
+          </div>
+          <table class="it-table">
+            <thead>
+              <tr><th>ID</th><th>Created</th><th>Type</th><th>Source</th><th>Destination</th><th>Property</th><th>Room</th><th>Operational impact</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="mono">EVT-2026-7831</td><td class="mono">17:04</td><td>checkin</td><td>GuestLine PMS</td><td>BroadSoft PBX</td><td>Langdale</td><td class="mono">204</td><td>Phone class-of-service not provisioned</td><td><button class="btn" style="font-size:10px;padding:3px 8px">Replay</button></td></tr>
+              <tr><td class="mono">EVT-2026-7830</td><td class="mono">17:08</td><td>checkin</td><td>GuestLine PMS</td><td>BroadSoft PBX</td><td>Langdale</td><td class="mono">115</td><td>Phone class-of-service not provisioned</td><td><button class="btn" style="font-size:10px;padding:3px 8px">Replay</button></td></tr>
+              <tr><td class="mono">EVT-2026-7829</td><td class="mono">17:11</td><td>checkin</td><td>GuestLine PMS</td><td>BroadSoft PBX</td><td>Langdale</td><td class="mono">307</td><td>Phone class-of-service not provisioned</td><td><button class="btn" style="font-size:10px;padding:3px 8px">Replay</button></td></tr>
+              <tr><td class="mono">EVT-2026-7826</td><td class="mono">17:14</td><td>checkin</td><td>GuestLine PMS</td><td>BroadSoft PBX</td><td>Langdale</td><td class="mono">412</td><td>Phone class-of-service not provisioned</td><td><button class="btn" style="font-size:10px;padding:3px 8px">Replay</button></td></tr>
+              <tr><td class="mono">EVT-2026-7822</td><td class="mono">17:42</td><td>checkout</td><td>GuestLine PMS</td><td>BroadSoft PBX</td><td>Langdale</td><td class="mono">218</td><td>Charges not posted to room</td><td><button class="btn" style="font-size:10px;padding:3px 8px">Replay</button></td></tr>
+              <tr><td class="mono">EVT-2026-7821</td><td class="mono">18:01</td><td>room-status</td><td>GuestLine PMS</td><td>FIAS link</td><td>Langdale</td><td class="mono">501</td><td>Housekeeping ready not propagated</td><td><button class="btn" style="font-size:10px;padding:3px 8px">Replay</button></td></tr>
+              <tr><td class="mono">EVT-2026-7819</td><td class="mono">18:14</td><td>guest-name</td><td>GuestLine PMS</td><td>BroadSoft PBX</td><td>Langdale</td><td class="mono">218</td><td>VIP greeting not active</td><td><button class="btn" style="font-size:10px;padding:3px 8px">Replay</button></td></tr>
+              <tr><td class="mono">EVT-2026-7815</td><td class="mono">19:38</td><td>wakeup</td><td>GuestLine PMS</td><td>BroadSoft PBX</td><td>Langdale</td><td class="mono">412</td><td>Wake-up scheduled but not registered with PBX</td><td><button class="btn" style="font-size:10px;padding:3px 8px">Replay</button></td></tr>
+              <tr><td class="mono">EVT-2026-7811</td><td class="mono">21:02</td><td>maid-status</td><td>BroadSoft PBX</td><td>GuestLine PMS</td><td>Aztec</td><td class="mono">307</td><td>Room status update missed</td><td><button class="btn" style="font-size:10px;padding:3px 8px">Replay</button></td></tr>
+              <tr><td class="mono">EVT-2026-7808</td><td class="mono">22:14</td><td>checkin</td><td>GuestLine PMS</td><td>BroadSoft PBX</td><td>Cottons</td><td class="mono">115</td><td>Class-of-service mismatch</td><td><button class="btn" style="font-size:10px;padding:3px 8px">Review</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+      <!-- ============== INTEGRATIONS ============== -->
+      <div class="page" id="page-integrations">
+        <div class="page-head">
+          <div>
+            <div class="page-h1">Integrations</div>
+            <div class="page-sub">35 interfaces across 7 properties · health · throughput · last event</div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn">All properties</button>
+            <button class="btn btn-prime">+ Add interface</button>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-l">Total interfaces</div>
+            <div class="kpi-v">35</div>
+            <div class="kpi-d">7 properties</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-l">Healthy</div>
+            <div class="kpi-v" style="color:var(--green)">31</div>
+            <div class="kpi-d up">88.6%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-l">Heartbeat-only</div>
+            <div class="kpi-v" style="color:var(--amber)">3</div>
+            <div class="kpi-d">no events &gt; 1h</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-l">Down</div>
+            <div class="kpi-v" style="color:var(--red)">1</div>
+            <div class="kpi-d dn">Langdale PMS link</div>
+          </div>
+        </div>
+
+        <div class="it-card">
+          <div class="it-card-head">
+            <div>
+              <div class="it-card-title">Interface health · per integration</div>
+              <div class="it-card-sub">Heartbeat-only flagged when no real events for &gt; 60 min</div>
+            </div>
+            <div style="font-size:11px;color:var(--text3);font-family:var(--t-mono)">last refresh 4s ago</div>
+          </div>
+          <table class="it-table">
+            <thead>
+              <tr><th>Integration</th><th>Property</th><th>Source → Dest</th><th>Status</th><th class="num">Last event</th><th class="num">Events / hr</th><th class="num">Queue</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>PMS link</td><td>Solent</td><td class="mono">GuestLine → BroadSoft</td><td><span class="sev-pill ok"><span class="status-dot ok"></span>Active</span></td><td class="num">2s ago</td><td class="num">412</td><td class="num">0</td></tr>
+              <tr><td>PMS link</td><td>Cottons</td><td class="mono">GuestLine → BroadSoft</td><td><span class="sev-pill ok"><span class="status-dot ok"></span>Active</span></td><td class="num">5s ago</td><td class="num">368</td><td class="num">0</td></tr>
+              <tr><td>PMS link</td><td>Aztec</td><td class="mono">GuestLine → BroadSoft</td><td><span class="sev-pill ok"><span class="status-dot ok"></span>Active</span></td><td class="num">11s ago</td><td class="num">281</td><td class="num">0</td></tr>
+              <tr><td>PMS link</td><td>Langdale</td><td class="mono">GuestLine → BroadSoft</td><td><span class="sev-pill crit"><span class="status-dot crit"></span>Heartbeat-only</span></td><td class="num" style="color:var(--red)">42 min</td><td class="num">0</td><td class="num" style="color:var(--amber)">14</td></tr>
+              <tr><td>FIAS link</td><td>Solent</td><td class="mono">PMS ↔ FIAS</td><td><span class="sev-pill ok"><span class="status-dot ok"></span>Active</span></td><td class="num">8s ago</td><td class="num">204</td><td class="num">0</td></tr>
+              <tr><td>FIAS link</td><td>Cottons</td><td class="mono">PMS ↔ FIAS</td><td><span class="sev-pill ok"><span class="status-dot ok"></span>Active</span></td><td class="num">12s ago</td><td class="num">186</td><td class="num">0</td></tr>
+              <tr><td>BMS link</td><td>Aztec</td><td class="mono">Trend IQ4 → spine</td><td><span class="sev-pill warn"><span class="status-dot warn"></span>Heartbeat-only</span></td><td class="num" style="color:var(--amber)">2h 14m</td><td class="num">0</td><td class="num">0</td></tr>
+              <tr><td>Door lock API</td><td>Langdale</td><td class="mono">Salto KS → spine</td><td><span class="sev-pill warn"><span class="status-dot warn"></span>Heartbeat-only</span></td><td class="num" style="color:var(--amber)">1h 8m</td><td class="num">0</td><td class="num">0</td></tr>
+              <tr><td>DECT registrar</td><td>Cottons</td><td class="mono">DECT base → softswitch</td><td><span class="sev-pill ok"><span class="status-dot ok"></span>Active</span></td><td class="num">3s ago</td><td class="num">541</td><td class="num">0</td></tr>
+              <tr><td>Twilio SMS</td><td>All</td><td class="mono">Sadie → Twilio</td><td><span class="sev-pill ok"><span class="status-dot ok"></span>Active</span></td><td class="num">14s ago</td><td class="num">87</td><td class="num">0</td></tr>
+              <tr><td>Loyalty CRM</td><td>All</td><td class="mono">Cendyn → spine</td><td><span class="sev-pill ok"><span class="status-dot ok"></span>Active</span></td><td class="num">1m ago</td><td class="num">42</td><td class="num">0</td></tr>
+              <tr><td>Review feed</td><td>All</td><td class="mono">Revinate → spine</td><td><span class="sev-pill ok"><span class="status-dot ok"></span>Active</span></td><td class="num">8m ago</td><td class="num">3</td><td class="num">0</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+      <!-- ============== ALERT RULES ============== -->
+      <div class="page" id="page-rules">
+        <div class="page-head">
+          <div>
+            <div class="page-h1">Alert rules</div>
+            <div class="page-sub">Configurable rules driving alerts on the spine</div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn">Test rule</button>
+            <button class="btn btn-prime">+ New rule</button>
+          </div>
+        </div>
+
+        <div class="it-card">
+          <div class="it-card-head">
+            <div>
+              <div class="it-card-title">Active alert rules · 18 enabled · 2 disabled</div>
+              <div class="it-card-sub">Each rule produces alerts on match · severity drives routing</div>
+            </div>
+          </div>
+          <table class="it-table">
+            <thead>
+              <tr><th>Rule</th><th>Condition</th><th>Severity</th><th>Routes to</th><th class="num">Triggered (7d)</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>PMS link silent</td><td class="mono">no events &gt; 30 min on PMS link</td><td><span class="sev-pill crit">P1</span></td><td>on-call IT</td><td class="num">2</td><td><span class="sev-pill ok">Enabled</span></td></tr>
+              <tr><td>DECT registration loss</td><td class="mono">SIP REGISTER 401/403 retry &gt; 3</td><td><span class="sev-pill warn">P2</span></td><td>property IT</td><td class="num">11</td><td><span class="sev-pill ok">Enabled</span></td></tr>
+              <tr><td>Wake-up failure</td><td class="mono">3 retries · no delivery confirmation</td><td><span class="sev-pill warn">P2</span></td><td>night manager</td><td class="num">8</td><td><span class="sev-pill ok">Enabled</span></td></tr>
+              <tr><td>BMS heartbeat lost</td><td class="mono">no heartbeat &gt; 60 min from Trend IQ4</td><td><span class="sev-pill warn">P2</span></td><td>property IT</td><td class="num">3</td><td><span class="sev-pill ok">Enabled</span></td></tr>
+              <tr><td>PoE port flap storm</td><td class="mono">&gt; 5 link state changes / 10 min</td><td><span class="sev-pill warn">P2</span></td><td>NetOps</td><td class="num">6</td><td><span class="sev-pill ok">Enabled</span></td></tr>
+              <tr><td>FIAS queue depth</td><td class="mono">&gt; 50 events queued for &gt; 5 min</td><td><span class="sev-pill warn">P2</span></td><td>property IT</td><td class="num">1</td><td><span class="sev-pill ok">Enabled</span></td></tr>
+              <tr><td>Reception answer rate drop</td><td class="mono">answer rate &lt; brand standard for &gt; 24h</td><td><span class="sev-pill warn">P2</span></td><td>property IT + biz</td><td class="num">2</td><td><span class="sev-pill ok">Enabled</span></td></tr>
+              <tr><td>Maintenance SLA risk</td><td class="mono">P1/P2 ticket &lt; 1h to SLA breach</td><td><span class="sev-pill warn">P2</span></td><td>maint manager</td><td class="num">14</td><td><span class="sev-pill ok">Enabled</span></td></tr>
+              <tr><td>Agent false-positive</td><td class="mono">decision marked FP by reviewer</td><td><span class="sev-pill info">P3</span></td><td>policy queue</td><td class="num">2</td><td><span class="sev-pill ok">Enabled</span></td></tr>
+              <tr><td>Door-lock battery low</td><td class="mono">battery &lt; 15% via Salto KS</td><td><span class="sev-pill info">P3</span></td><td>property IT</td><td class="num">7</td><td><span class="sev-pill ok">Enabled</span></td></tr>
+              <tr><td>(Disabled) Cisco AP CPU</td><td class="mono">AP CPU &gt; 90% sustained 5 min</td><td><span class="sev-pill info">P3</span></td><td>NetOps</td><td class="num">0</td><td style="color:var(--text3)">Disabled</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+      <!-- ============== KPIs & SLAs ============== -->
+      <div class="page" id="page-kpi">
+        <div class="page-head">
+          <div>
+            <div class="page-h1">KPIs &amp; SLAs</div>
+            <div class="page-sub">Service-level performance against contracted targets · 30-day rolling</div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn">Last 7 days</button>
+            <button class="btn btn-prime">Last 30 days</button>
+          </div>
+        </div>
+
+        <div class="it-card">
+          <div class="it-card-head">
+            <div>
+              <div class="it-card-title">SLA scorecard · estate-wide · last 30 days</div>
+              <div class="it-card-sub">Metrics tied to customer-contract SLAs · pass / breach drives credits</div>
+            </div>
+          </div>
+          <table class="it-table">
+            <thead>
+              <tr><th>Metric</th><th class="num">Target</th><th class="num">Actual</th><th>Compliance</th><th>Status</th><th class="num">Breach hours</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>PMS link uptime</td><td class="num">≥ 99.5%</td><td class="num">99.7%</td><td>
+                <div class="sla-gauge"><div class="sla-gauge-fill ok" style="width:99.7%"></div></div>
+              </td><td><span class="sev-pill ok">PASS</span></td><td class="num">2.1</td></tr>
+              <tr><td>PBX availability</td><td class="num">≥ 99.9%</td><td class="num">99.94%</td><td>
+                <div class="sla-gauge"><div class="sla-gauge-fill ok" style="width:99.94%"></div></div>
+              </td><td><span class="sev-pill ok">PASS</span></td><td class="num">0.4</td></tr>
+              <tr><td>Wake-up delivery rate</td><td class="num">≥ 98%</td><td class="num">97.2%</td><td>
+                <div class="sla-gauge"><div class="sla-gauge-fill warn" style="width:97.2%"></div></div>
+              </td><td><span class="sev-pill warn">WATCH</span></td><td class="num">—</td></tr>
+              <tr><td>Reception answer rate</td><td class="num">≥ 85%</td><td class="num">82.1%</td><td>
+                <div class="sla-gauge"><div class="sla-gauge-fill crit" style="width:82.1%"></div></div>
+              </td><td><span class="sev-pill crit">BREACH</span></td><td class="num">28.4</td></tr>
+              <tr><td>Maintenance close-out (P1)</td><td class="num">≤ 4h</td><td class="num">3h 6m</td><td>
+                <div class="sla-gauge"><div class="sla-gauge-fill ok" style="width:78%"></div></div>
+              </td><td><span class="sev-pill ok">PASS</span></td><td class="num">0</td></tr>
+              <tr><td>Agent auto-fix success</td><td class="num">≥ 90%</td><td class="num">94.2%</td><td>
+                <div class="sla-gauge"><div class="sla-gauge-fill ok" style="width:94.2%"></div></div>
+              </td><td><span class="sev-pill ok">PASS</span></td><td class="num">0</td></tr>
+              <tr><td>Alert MTTR (P1)</td><td class="num">≤ 30 min</td><td class="num">22 min</td><td>
+                <div class="sla-gauge"><div class="sla-gauge-fill ok" style="width:73%"></div></div>
+              </td><td><span class="sev-pill ok">PASS</span></td><td class="num">0</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+      <!-- ============== Lighter pages ============== -->
+      <div class="page" id="page-alerts">
+        <div class="page-head">
+          <div><div class="page-h1">Alerts</div><div class="page-sub">Full alert queue · 7 active · severity-sorted</div></div>
+          <div style="display:flex;gap:6px"><button class="btn">Filters</button><button class="btn btn-prime">Acknowledge all</button></div>
+        </div>
+        <div class="it-card">
+          <div class="it-card-head"><div><div class="it-card-title">Open alerts</div><div class="it-card-sub">Click any alert to view detail with causal chain</div></div></div>
+          <table class="it-table">
+            <thead><tr><th>ID</th><th>Severity</th><th>Property</th><th>Summary</th><th>Opened</th><th>Triaged by</th></tr></thead>
+            <tbody>
+              <tr style="cursor:pointer" onclick="document.querySelector('.nav-item[data-view=alerts]').click()"><td class="mono">ALR-2026-0419-0731</td><td><span class="sev-pill crit">P1</span></td><td>Cottons</td><td>DECT registrations dropped — reception PHB</td><td class="mono">17:31</td><td>NetOps (auto-triaged)</td></tr>
+              <tr><td class="mono">ALR-2026-0419-0728</td><td><span class="sev-pill crit">P1</span></td><td>Langdale</td><td>PMS link heartbeat-only · 14 events queued</td><td class="mono">17:00</td><td>NetOps (auto-triaged)</td></tr>
+              <tr><td class="mono">ALR-2026-0419-0724</td><td><span class="sev-pill crit">P1</span></td><td>Aztec</td><td>Door lock unresponsive — room 115</td><td class="mono">04:18</td><td>FacilityOps</td></tr>
+              <tr><td class="mono">ALR-2026-0419-0719</td><td><span class="sev-pill warn">P2</span></td><td>Aztec</td><td>BMS heartbeat-only · 2h 14m</td><td class="mono">15:28</td><td>FacilityOps</td></tr>
+              <tr><td class="mono">ALR-2026-0419-0717</td><td><span class="sev-pill warn">P2</span></td><td>Cottons</td><td>Reception answer rate below brand · 3 days</td><td class="mono">yesterday</td><td>Sadie escalation</td></tr>
+              <tr><td class="mono">ALR-2026-0419-0712</td><td><span class="sev-pill warn">P2</span></td><td>Langdale</td><td>Wake-up SLA breach risk · 6 failures today</td><td class="mono">15:08</td><td>(unassigned)</td></tr>
+              <tr><td class="mono">ALR-2026-0419-0709</td><td><span class="sev-pill warn">P2</span></td><td>Cottons</td><td>PoE port flap storm · sw-edge-01</td><td class="mono">14:42</td><td>NetOps</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="page" id="page-events">
+        <div class="page-head">
+          <div><div class="page-h1">Live events</div><div class="page-sub">Event firehose · ranked by deviation from learned baseline</div></div>
+        </div>
+        <div class="it-card">
+          <div class="it-card-head"><div><div class="it-card-title">Stream · last 5 minutes</div><div class="it-card-sub">Anomalous events highlighted by Lumina · normal events still shown for context</div></div></div>
+          <table class="it-table">
+            <thead><tr><th>Time</th><th>Severity</th><th>Type</th><th>Property</th><th>Detail</th><th class="num">Z-score</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">17:42:14</td><td><span class="sev-pill warn">SIP</span></td><td>register-fail</td><td>Cottons</td><td>dect-base-02 · ext 3014 · 401 unauthorized · attempt 3</td><td class="num" style="color:var(--amber)">+2.4σ</td></tr>
+              <tr><td class="mono">17:42:08</td><td><span class="sev-pill info">SIP</span></td><td>register-ok</td><td>Solent</td><td>dect-base-04 · ext 3041 · 200 OK · 15ms</td><td class="num">+0.1σ</td></tr>
+              <tr><td class="mono">17:42:02</td><td><span class="sev-pill agent">AGENT</span></td><td>auto-fix</td><td>Cottons</td><td>NetOps power-cycled sw-edge-01 port 1/0/14 · DECT recovery</td><td class="num">—</td></tr>
+              <tr><td class="mono">17:41:58</td><td><span class="sev-pill ok">CDR</span></td><td>call-end</td><td>Solent</td><td>extn 3014 → 9-44-1142… · 4m 12s · MOS 4.3</td><td class="num">+0.0σ</td></tr>
+              <tr><td class="mono">17:41:55</td><td><span class="sev-pill warn">SYS</span></td><td>port-flap</td><td>Cottons</td><td>sw-edge-01 1/0/14 · UP→DOWN→UP · 3rd in 10min</td><td class="num" style="color:var(--amber)">+3.1σ</td></tr>
+              <tr><td class="mono">17:41:48</td><td><span class="sev-pill info">PMS</span></td><td>checkout</td><td>Solent</td><td>room 412 · BK-2026-04-7782 · settled</td><td class="num">+0.2σ</td></tr>
+              <tr><td class="mono">17:41:42</td><td><span class="sev-pill agent">AGENT</span></td><td>service-decision</td><td>Cottons</td><td>Sadie · out-of-hours request handled · room 412 extra towels</td><td class="num">—</td></tr>
+              <tr><td class="mono">17:41:33</td><td><span class="sev-pill crit">PMS</span></td><td>link-silent</td><td>Langdale</td><td>GuestLine PMS · no events &gt; 30 min · alert opened</td><td class="num" style="color:var(--red)">+5.8σ</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="page" id="page-oncall">
+        <div class="page-head"><div><div class="page-h1">On-call</div><div class="page-sub">Rotations · escalation policies · runbooks</div></div></div>
+        <div class="kpi-row">
+          <div class="kpi-card"><div class="kpi-l">On-call now</div><div class="kpi-v">J. Makin</div><div class="kpi-d">primary · NetOps</div></div>
+          <div class="kpi-card"><div class="kpi-l">Backup</div><div class="kpi-v" style="font-size:18px">P. Singh</div><div class="kpi-d">secondary</div></div>
+          <div class="kpi-card"><div class="kpi-l">Pages this shift</div><div class="kpi-v">2</div><div class="kpi-d">both auto-triaged first</div></div>
+          <div class="kpi-card"><div class="kpi-l">MTTR (P1)</div><div class="kpi-v">22m</div><div class="kpi-d up">target ≤ 30m</div></div>
+        </div>
+        <div class="it-card">
+          <div class="it-card-head"><div><div class="it-card-title">Runbook library</div><div class="it-card-sub">12 runbooks · referenced 47 times in last 30d</div></div></div>
+          <table class="it-table">
+            <thead><tr><th>Runbook</th><th>Trigger</th><th class="num">Used 30d</th><th>Avg resolve</th></tr></thead>
+            <tbody>
+              <tr><td>RB-014 · DECT registration loss</td><td class="mono">SIP REGISTER 401 retry</td><td class="num">11</td><td>4 min</td></tr>
+              <tr><td>RB-009 · PMS link silent</td><td class="mono">no events &gt; 30 min</td><td class="num">2</td><td>87 min</td></tr>
+              <tr><td>RB-018 · Port flap storm</td><td class="mono">&gt; 5 link state / 10 min</td><td class="num">6</td><td>2 min (auto)</td></tr>
+              <tr><td>RB-022 · Wake-up failure cluster</td><td class="mono">3+ failures / property / day</td><td class="num">4</td><td>14 min</td></tr>
+              <tr><td>RB-003 · BMS heartbeat lost</td><td class="mono">no heartbeat &gt; 60 min</td><td class="num">3</td><td>22 min</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="page" id="page-devices">
+        <div class="page-head"><div><div class="page-h1">Device estate</div><div class="page-sub">248 monitored devices across 7 properties</div></div></div>
+        <div class="kpi-row">
+          <div class="kpi-card"><div class="kpi-l">Total devices</div><div class="kpi-v">248</div><div class="kpi-d">across 7 sites</div></div>
+          <div class="kpi-card"><div class="kpi-l">EoL within 12 mo</div><div class="kpi-v" style="color:var(--amber)">31</div><div class="kpi-d">refresh recommended</div></div>
+          <div class="kpi-card"><div class="kpi-l">Out-of-firmware</div><div class="kpi-v" style="color:var(--red)">8</div><div class="kpi-d dn">all DECT bases</div></div>
+          <div class="kpi-card"><div class="kpi-l">Unmonitored</div><div class="kpi-v">14</div><div class="kpi-d">discovery candidates</div></div>
+        </div>
+        <div class="it-card">
+          <div class="it-card-head"><div><div class="it-card-title">By device class</div><div class="it-card-sub">Inventory + status</div></div></div>
+          <table class="it-table">
+            <thead><tr><th>Class</th><th>Vendor</th><th class="num">Total</th><th class="num">Healthy</th><th class="num">Warn</th><th class="num">Crit</th><th class="num">EoL</th></tr></thead>
+            <tbody>
+              <tr><td>Switches</td><td>Aruba CX</td><td class="num">38</td><td class="num">36</td><td class="num">2</td><td class="num">0</td><td class="num">4</td></tr>
+              <tr><td>Wireless APs</td><td>Aruba IAP</td><td class="num">82</td><td class="num">79</td><td class="num">3</td><td class="num">0</td><td class="num">12</td></tr>
+              <tr><td>DECT base stations</td><td>Spectralink</td><td class="num">28</td><td class="num">24</td><td class="num">3</td><td class="num">1</td><td class="num">8</td></tr>
+              <tr><td>Door locks</td><td>Salto Neo</td><td class="num">432</td><td class="num">428</td><td class="num">4</td><td class="num">0</td><td class="num">0</td></tr>
+              <tr><td>BMS controllers</td><td>Trend IQ4</td><td class="num">14</td><td class="num">13</td><td class="num">1</td><td class="num">0</td><td class="num">3</td></tr>
+              <tr><td>UPS</td><td>APC</td><td class="num">21</td><td class="num">21</td><td class="num">0</td><td class="num">0</td><td class="num">4</td></tr>
+              <tr><td>Servers / NUCs</td><td>Dell</td><td class="num">12</td><td class="num">12</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="page" id="page-agents">
+        <div class="page-head"><div><div class="page-h1">Agent activity</div><div class="page-sub">Auto-fixes · authorization policies · audit</div></div></div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:30px;text-align:center">
+          <div style="font-size:14px;color:var(--text);margin-bottom:8px">Agent activity opens in dedicated forensic view</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:16px">Tamper-evident audit trail · case file per decision · policy editor</div>
+          <a href="agent_audit.html?from=it" class="btn btn-prime" style="text-decoration:none;display:inline-block">Open audit trail →</a>
+        </div>
+      </div>
+
+      <div class="page" id="page-risk">
+        <div class="page-head"><div><div class="page-h1">Risk &amp; debt</div><div class="page-sub">Technical debt index · vendor concentration · refresh roadmap</div></div></div>
+        <div class="kpi-row">
+          <div class="kpi-card"><div class="kpi-l">Tech debt score</div><div class="kpi-v" style="color:var(--amber)">6.4<span style="color:var(--text3);font-size:14px">/10</span></div><div class="kpi-d">unchanged 30d</div></div>
+          <div class="kpi-card"><div class="kpi-l">Dormant integrations</div><div class="kpi-v" style="color:var(--amber)">3</div><div class="kpi-d">no events &gt; 14 days</div></div>
+          <div class="kpi-card"><div class="kpi-l">EoL hardware</div><div class="kpi-v" style="color:var(--red)">31</div><div class="kpi-d">12 months out</div></div>
+          <div class="kpi-card"><div class="kpi-l">Vendor concentration</div><div class="kpi-v">68%</div><div class="kpi-d">top vendor (Aruba)</div></div>
+        </div>
+        <div class="it-card">
+          <div class="it-card-head"><div><div class="it-card-title">Debt items requiring attention</div><div class="it-card-sub">Sorted by risk-weighted impact</div></div></div>
+          <table class="it-table">
+            <thead><tr><th>Item</th><th>Property</th><th>Risk class</th><th>Cost to address</th><th>Recommended by</th></tr></thead>
+            <tbody>
+              <tr><td>DECT base firmware (8 units)</td><td>Aztec, Cottons, Langdale</td><td><span class="sev-pill crit">High</span></td><td class="num">£2.4k</td><td>NetOps · 30 days</td></tr>
+              <tr><td>Aruba CX switch refresh (4 units EoL)</td><td>Solent, Thorpe</td><td><span class="sev-pill warn">Medium</span></td><td class="num">£18k</td><td>Refresh roadmap · Q3</td></tr>
+              <tr><td>BMS Trend IQ4 controllers (3 EoL)</td><td>Solent, Cottons, Aztec</td><td><span class="sev-pill warn">Medium</span></td><td class="num">£12k</td><td>Refresh roadmap · Q4</td></tr>
+              <tr><td>Dormant integration: legacy CRM API</td><td>All</td><td><span class="sev-pill info">Low</span></td><td class="num">£0</td><td>Decommission</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer">
+      <span>estate-it · v0.4 · Thwaites Group</span>
+      <span id="foot-time">retrieved 17:42:11 UTC</span>
+    </div>
+  </div>
+
+</div>
+
+
+<script>
+// ============ DATA ============
+const sites = [
+  {id:'cottons',name:'Cottons Hotel',meta:'Knutsford · 89 keys',score:71,grade:'warn',alerts:{p1:1,p2:1,p3:0},worst:'DECT registrations dropped',worstSig:'8 handsets unreg · port flap',spark:[88,89,86,90,91,87,84,82,79,75,73,71]},
+  {id:'langdale',name:'Langdale',meta:'Lake District · 65 keys',score:42,grade:'crit',alerts:{p1:2,p2:0,p3:1},worst:'PMS heartbeat only',worstSig:'GuestLine link down 17:00',spark:[78,79,80,79,78,76,72,68,60,52,46,42]},
+  {id:'solent',name:'Solent Hotel',meta:'Whiteley · 112 keys',score:84,grade:'warn',alerts:{p1:0,p2:1,p3:2},worst:'Group reservations → VM',worstSig:'CF Selective deflecting calls',spark:[91,90,89,88,86,85,86,86,85,84,84,84]},
+  {id:'thorpe',name:'Thorpe Park Hotel',meta:'Leeds · 124 keys',score:94,grade:'ok',alerts:{p1:0,p2:0,p3:1},worst:'Spa hunt 66s ring cycle',worstSig:'Within tolerance',spark:[92,93,93,94,94,93,94,94,94,94,94,94]},
+  {id:'aztec',name:'Aztec Hotel',meta:'Bristol · 95 keys',score:91,grade:'ok',alerts:{p1:0,p2:0,p3:0},worst:'All systems nominal',worstSig:'',spark:[88,89,90,91,90,91,91,92,92,91,91,91]},
+  {id:'kettering',name:'Kettering Park',meta:'Northants · 119 keys',score:96,grade:'ok',alerts:{p1:0,p2:0,p3:0},worst:'All systems nominal',worstSig:'',spark:[95,96,96,96,95,96,96,96,96,96,96,96]},
+  {id:'nlakes',name:'North Lakes',meta:'Penrith · 84 keys',score:97,grade:'ok',alerts:{p1:0,p2:0,p3:0},worst:'All systems nominal',worstSig:'',spark:[97,97,96,97,97,97,97,97,97,97,97,97]},
+];
+
+const alerts = [
+  {id:'a1',sev:'p1',time:'17:31',site:'Cottons Hotel',summary:'DECT registrations dropped 12 → 4',detail:'Port flap on sw-edge-01:1/0/14 · 8 handsets unregistered · answer rate falling',impact:'£540/hr',impactL:'rev exposure',agent:true},
+  {id:'a2',sev:'p1',time:'17:00',site:'Langdale',summary:'GuestLine PMS heartbeat-only',detail:'No PMS events received for 42m · 14 check-ins not posted to PBX',impact:'14 rooms',impactL:'unposted',agent:true},
+  {id:'a3',sev:'p1',time:'14:02',site:'Cottons Hotel',summary:'BMS interface dormant — 6 events queued',detail:'iface 34 · last_started 2023 · HVAC not receiving check-in occupancy',impact:'£8/hr',impactL:'energy waste',agent:false},
+  {id:'a4',sev:'p2',time:'17:18',site:'Solent Hotel',summary:'Group Reservations CF deflecting to VM',detail:'External answer rate 48% · CF Selective rule active outside policy hours',impact:'12 calls',impactL:'today',agent:true},
+  {id:'a5',sev:'p2',time:'15:45',site:'Aztec Hotel',summary:'VEGAARM gateway latency rising',detail:'Maid-status IVR ack times up 80% from baseline · approaching EoL',impact:'1.2x',impactL:'baseline',agent:true},
+  {id:'a6',sev:'p3',time:'12:30',site:'Thorpe Park',summary:'Spa hunt group full ring cycle',detail:'Hunt chain 604 → 475 hitting max ring 66s on 12% of calls',impact:'',impactL:'',agent:false},
+  {id:'a7',sev:'p3',time:'09:15',site:'Solent Hotel',summary:'Wake-up SLA below 98% target',detail:'Group SLA at 93.6% · 2 late, 1 failed in last 24h',impact:'-4.4pp',impactL:'vs target',agent:false},
+];
+
+// ============ RENDER ============
+function gradeColor(g){return g==='crit'?'red':g==='warn'?'amber':'green'}
+function gradeScore(s){return s<60?'red':s<85?'amber':'green'}
+
+function renderEstate(){
+  const grid = document.getElementById('estate-grid');
+  grid.innerHTML = sites.map(s=>`
+    <div class="site-card ${s.grade==='crit'?'crit':s.grade==='warn'?'warn':''}" data-site="${s.id}">
+      <div class="site-head">
+        <div>
+          <div class="site-name">${s.name}</div>
+          <div class="site-meta">${s.meta}</div>
+        </div>
+        <div class="site-score ${gradeScore(s.score)}">${s.score}</div>
+      </div>
+      <div class="site-spark"><canvas id="spark-${s.id}"></canvas></div>
+      <div class="site-alerts">
+        <div class="site-alert-counts">
+          <span class="sac r">P1 ${s.alerts.p1}</span>
+          <span class="sac a">P2 ${s.alerts.p2}</span>
+          <span class="sac g">P3 ${s.alerts.p3}</span>
+        </div>
+      </div>
+      <div class="site-worst">
+        <span class="dot ${s.grade==='crit'?'red':s.grade==='warn'?'amber':'green'} ${s.grade!=='ok'?'pulsing':''}"></span>
+        <div style="flex:1"><span class="site-worst-sig">${s.worst}</span>${s.worstSig?` · ${s.worstSig}`:''}</div>
+      </div>
+    </div>`).join('');
+
+  // sparklines
+  sites.forEach(s=>{
+    const ctx = document.getElementById('spark-'+s.id);
+    if(!ctx) return;
+    const color = s.grade==='crit'?'#e85a4f':s.grade==='warn'?'#e0a62a':'#7fb849';
+    new Chart(ctx,{type:'line',data:{labels:s.spark.map((_,i)=>i),datasets:[{data:s.spark,borderColor:color,backgroundColor:color+'22',tension:.35,pointRadius:0,borderWidth:1.4,fill:true}]},options:{plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{display:false},y:{display:false,suggestedMin:30,suggestedMax:100}},maintainAspectRatio:false}});
+  });
+
+  // click handlers
+  document.querySelectorAll('.site-card').forEach(c=>{
+    c.addEventListener('click',()=>{
+      const sid = c.dataset.site;
+      const s = sites.find(x=>x.id===sid);
+      goProperty(s);
+    });
+  });
+}
+
+function renderAlerts(){
+  const list = document.getElementById('alert-list');
+  list.innerHTML = alerts.map(a=>`
+    <div class="aq-row" data-alert="${a.id}">
+      <div class="aq-sev ${a.sev}"></div>
+      <div class="aq-time">${a.time}</div>
+      <div class="aq-site">${a.site}</div>
+      <div class="aq-body">
+        <div class="aq-summary">${a.summary}</div>
+        <div class="aq-detail">${a.detail}</div>
+      </div>
+      <div class="aq-impact">${a.impact?`<div class="aq-impact-v">${a.impact}</div><div>${a.impactL}</div>`:''}</div>
+      <div class="aq-tag">${a.agent?'<span class="agent-tag">triaged</span>':'<span class="chip dim">manual</span>'}</div>
+      <div style="color:var(--text3);text-align:right">›</div>
+    </div>`).join('');
+
+  document.querySelectorAll('.aq-row').forEach(r=>{
+    r.addEventListener('click',()=>{
+      // route to alert detail view (the worked example)
+      goAlert();
+    });
+  });
+}
+
+// ============ NAV ============
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const el = document.getElementById('page-'+id);
+  if(el) el.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function setNavActive(view){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.view===view));
+}
+function setCrumbs(arr){
+  const c = document.getElementById('crumbs');
+  c.innerHTML = arr.map((x,i)=>{
+    const cls = i===arr.length-1?'crumb cur':'crumb';
+    return (i>0?'<span class="crumb-sep">/</span>':'')+`<span class="${cls}" data-back="${x.view||''}">${x.label}</span>`;
+  }).join('');
+  // wire crumb navigation
+  c.querySelectorAll('.crumb[data-back]').forEach(el=>{
+    if(el.classList.contains('cur')) return;
+    el.addEventListener('click',()=>{
+      const v = el.dataset.back;
+      if(v) navTo(v);
+    });
+  });
+}
+function navTo(view){
+  setNavActive(view);
+  showPage(view);
+  const labels = {estate:'Estate',alerts:'Alerts',events:'Live events',oncall:'On-call',devices:'Device estate',integrations:'Integrations',agents:'Agent activity',exec:'Executive',risk:'Risk & debt',kpi:'KPIs & SLAs'};
+  setCrumbs([{label:labels[view]||view}]);
+}
+function goAlert(){
+  showPage('alert');
+  setCrumbs([{label:'Estate',view:'estate'},{label:'Cottons Hotel',view:'property'},{label:'Alert ALR-2026-0419-0731'}]);
+  setNavActive('estate');
+  setTimeout(drawSignalSpark,80);
+}
+function goProperty(site){
+  showPage('property');
+  document.getElementById('prop-name').textContent = site.name;
+  document.getElementById('prop-icon').textContent = site.name.replace(/[^A-Z]/g,'').slice(0,2) || site.name.slice(0,2).toUpperCase();
+  setCrumbs([{label:'Estate',view:'estate'},{label:site.name}]);
+  setNavActive('estate');
+}
+
+// hook nav clicks
+document.querySelectorAll('.nav-item').forEach(n=>{
+  n.addEventListener('click',()=>{
+    const v = n.dataset.view;
+    if(v) navTo(v);
+  });
+});
+document.querySelectorAll('[data-back]').forEach(el=>{
+  el.addEventListener('click',(e)=>{
+    if(el.classList.contains('crumb')) return; // crumbs handled above
+    const v = el.dataset.back;
+    if(v) navTo(v);
+  });
+});
+
+// ============ CHARTS ============
+function drawSignalSpark(){
+  const ctx = document.getElementById('signalSpark');
+  if(!ctx) return;
+  // 30 datapoints, ~1 per minute
+  const data = [12,12,11,12,12,12,11,12,12,12,11,12,12,12,11,12,12,11,12,11,12,12,4,4,4,4,4,4,4,4];
+  const baseline = Array(30).fill(12);
+  new Chart(ctx,{
+    type:'line',
+    data:{labels:data.map((_,i)=>i),datasets:[
+      {data,borderColor:'#e85a4f',backgroundColor:'#e85a4f22',tension:.1,pointRadius:0,borderWidth:1.6,fill:true,stepped:'before'},
+      {data:baseline,borderColor:'#a591e8',borderDash:[3,3],pointRadius:0,borderWidth:1,fill:false}
+    ]},
+    options:{plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{display:false},y:{display:false,min:0,max:14}},maintainAspectRatio:false}
+  });
+}
+
+function drawExecCharts(){
+  const styles = getComputedStyle(document.documentElement);
+  const text3 = styles.getPropertyValue('--text3').trim();
+  const grid = styles.getPropertyValue('--border').trim();
+
+  const sparkCfg = (data, color) => ({
+    type:'line',
+    data:{labels:data.map((_,i)=>i),datasets:[{data,borderColor:color,backgroundColor:color+'22',tension:.3,pointRadius:0,borderWidth:1.4,fill:true}]},
+    options:{plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{display:false},y:{display:false}},maintainAspectRatio:false}
+  });
+
+  const c1 = document.getElementById('execUptime');
+  if(c1 && !c1._init){ c1._init=true; new Chart(c1, sparkCfg([99.1,99.0,99.2,99.3,99.2,99.4,99.4,99.5,99.4,99.4,99.4,99.42], '#7fb849')); }
+  const c2 = document.getElementById('execMttr');
+  if(c2 && !c2._init){ c2._init=true; new Chart(c2, sparkCfg([62,58,55,52,48,45,42,40,39,38,38,38], '#5b9fd6')); }
+  const c3 = document.getElementById('execCost');
+  if(c3 && !c3._init){ c3._init=true; new Chart(c3, sparkCfg([28,24,22,21,19,17,16,16,15,14,14,14.2], '#e0a62a')); }
+  const c4 = document.getElementById('execDebt');
+  if(c4 && !c4._init){ c4._init=true; new Chart(c4, sparkCfg([54,55,56,58,59,60,61,61,62,62,62,62], '#e85a4f')); }
+
+  const ca = document.getElementById('execAgent');
+  if(ca && !ca._init){
+    ca._init=true;
+    const labels = ['Mar 1','Mar 8','Mar 15','Mar 22','Mar 29','Apr 5','Apr 12','Apr 19'];
+    const auto = [62,71,68,79,82,84,91,94];
+    const escalated = [22,18,21,17,16,18,15,12];
+    new Chart(ca,{type:'bar',data:{labels,datasets:[
+      {label:'Auto-resolved',data:auto,backgroundColor:'#3ec1a4',borderRadius:2,barPercentage:.7,categoryPercentage:.6},
+      {label:'Escalated',data:escalated,backgroundColor:text3||'#6e6a5e',borderRadius:2,barPercentage:.7,categoryPercentage:.6}
+    ]},options:{plugins:{legend:{display:false},tooltip:{enabled:true}},scales:{x:{display:true,grid:{display:false},ticks:{color:text3,font:{size:9,family:'IBM Plex Mono'}}},y:{display:false,stacked:false}},maintainAspectRatio:false}});
+  }
+}
+
+// ============ THEME ============
+document.getElementById('theme-toggle').addEventListener('click',()=>{
+  document.documentElement.classList.toggle('light');
+  // recolor charts? for simplicity, leave existing canvases alone
+});
+
+// ============ CLOCK ============
+function tick(){
+  const d = new Date();
+  const t = d.toTimeString().slice(0,8);
+  document.getElementById('clock').textContent = t;
+  const f = document.getElementById('foot-time');
+  if(f) f.textContent = `retrieved ${t} UTC`;
+}
+tick(); setInterval(tick,1000);
+
+// ============ INIT ============
+renderEstate();
+renderAlerts();
+
+// observe view changes to draw exec charts when needed
+const obs = new MutationObserver(()=>{
+  if(document.getElementById('page-exec').classList.contains('active')){
+    setTimeout(drawExecCharts, 50);
+  }
+});
+obs.observe(document.getElementById('page-exec'),{attributes:true,attributeFilter:['class']});
+
+
+// ============ NL QUERY BAR (IT) ============
+const NL_RESPONSES_IT = [
+  {pattern:/(devices?).*(flap|flapping|flap.*most)/i, render:()=>`
+    <div class="src">Lumina · device diagnostic</div>
+    <p><strong>Three devices account for 78% of port flaps this week.</strong> All Aruba CX edge switches; the pattern is concentrated to specific PoE ports serving DECT base stations.</p>
+    <div class="nl-data">
+      <div class="nl-data-row"><span class="nl-data-l">sw-edge-01 · Cottons</span><span>14 flaps · port 1/0/14</span></div>
+      <div class="nl-data-row"><span class="nl-data-l">sw-edge-03 · Aztec</span><span>9 flaps · port 1/0/22</span></div>
+      <div class="nl-data-row"><span class="nl-data-l">sw-edge-02 · Langdale</span><span>6 flaps · port 1/0/08</span></div>
+      <div class="nl-data-row"><span class="nl-data-l">All other devices combined</span><span>8 flaps</span></div>
+    </div>
+    <p style="margin-top:8px;font-size:12px;color:var(--text2)"><strong>Pattern:</strong> all three are PoE-budget-pressed and serve DECT base stations on EoL firmware. The agentic layer suggests coordinated firmware refresh would close the issue.</p>
+  `},
+  {pattern:/(MTTR|mean time|resolve).*(trend|over)|MTTR/i, render:()=>`
+    <div class="src">Lumina · MTTR trend</div>
+    <p><strong>Estate MTTR has improved from 38 to 22 minutes</strong> over the last 90 days, driven entirely by agent auto-fix on PoE/DECT issues. P2 MTTR is steady at ~45 min.</p>
+    <div class="nl-data">
+      <div class="nl-data-row"><span class="nl-data-l">P1 (now)</span><span>22 min · target ≤ 30</span></div>
+      <div class="nl-data-row"><span class="nl-data-l">P1 (90d ago)</span><span>38 min</span></div>
+      <div class="nl-data-row"><span class="nl-data-l">P2 (now)</span><span>45 min</span></div>
+      <div class="nl-data-row"><span class="nl-data-l">% auto-fixed</span><span>62% of P1</span></div>
+    </div>
+  `},
+  {pattern:/(integration|interface).*(dormant|silent|long)/i, render:()=>`
+    <div class="src">Lumina · integration health</div>
+    <p><strong>Three integrations have been dormant longer than expected.</strong> The longest is the legacy CRM API at 14 days — recommended for decommissioning.</p>
+    <div class="nl-data">
+      <div class="nl-data-row"><span class="nl-data-l">Legacy CRM API</span><span>14 days · decommission?</span></div>
+      <div class="nl-data-row"><span class="nl-data-l">BMS link · Aztec</span><span>2h 14m · investigating</span></div>
+      <div class="nl-data-row"><span class="nl-data-l">Door lock API · Langdale</span><span>1h 8m · normal pattern</span></div>
+    </div>
+  `},
+  {pattern:/(agent|sadie|mike|henry).*(auto.?fix|fix|today|did)/i, render:()=>`
+    <div class="src">Lumina · agent activity</div>
+    <p>Agents have auto-fixed <strong>14 issues today</strong> across the estate, all within authority. The most consequential was a coordinated DECT recovery at Cottons.</p>
+    <div class="nl-data">
+      <div class="nl-data-row"><span class="nl-data-l">PoE port resets</span><span>9 · all successful</span></div>
+      <div class="nl-data-row"><span class="nl-data-l">Maintenance auto-routed</span><span>11 tickets</span></div>
+      <div class="nl-data-row"><span class="nl-data-l">Service decisions</span><span>1,472 (Sadie)</span></div>
+      <div class="nl-data-row"><span class="nl-data-l">Escalated to humans</span><span>3</span></div>
+    </div>
+  `},
+  {pattern:/(wake.?up).*(fail|failure|across)/i, render:()=>`
+    <div class="src">Lumina · wake-up SLA</div>
+    <p>Wake-up SLA is <strong>97.2% across the estate</strong> on a 98% target — slightly under but driven entirely by Langdale (86.1%). Six other properties are passing.</p>
+    <div class="nl-data">
+      <div class="nl-data-row"><span class="nl-data-l">Langdale</span><span>86.1% · BREACH · DECT linkage</span></div>
+      <div class="nl-data-row"><span class="nl-data-l">Group total</span><span>97.2% · WATCH</span></div>
+      <div class="nl-data-row"><span class="nl-data-l">Six other properties</span><span>99.0–100%</span></div>
+    </div>
+  `},
+  {pattern:/(P1|priority.?1|severity.?1|most.*open|alerts.*property)/i, render:()=>`
+    <div class="src">Lumina · alert distribution</div>
+    <p><strong>Cottons has the most open P1 alerts (1)</strong>, followed by Langdale (1) and Aztec (1). All three were auto-triaged within 30 seconds.</p>
+    <div class="nl-data">
+      <div class="nl-data-row"><span class="nl-data-l">Cottons</span><span>1 P1 · DECT regs</span></div>
+      <div class="nl-data-row"><span class="nl-data-l">Langdale</span><span>1 P1 · PMS link</span></div>
+      <div class="nl-data-row"><span class="nl-data-l">Aztec</span><span>1 P1 · door lock</span></div>
+      <div class="nl-data-row"><span class="nl-data-l">P2 across estate</span><span>4</span></div>
+    </div>
+  `},
+];
+
+const nlInputWrapIT = document.getElementById('nl-input-wrap');
+const nlInputIT = document.getElementById('nl-input');
+const nlPanelIT = document.getElementById('nl-panel');
+const nlConvIT = document.getElementById('nl-conv');
+const nlSuggsIT = document.getElementById('nl-suggs');
+
+function nlOpenIT(){nlPanelIT.classList.add('open');nlInputWrapIT.classList.add('focused');}
+function nlCloseIT(){nlPanelIT.classList.remove('open');nlInputWrapIT.classList.remove('focused');}
+nlInputIT.addEventListener('focus', nlOpenIT);
+document.addEventListener('click', (e)=>{
+  if(!document.getElementById('nl-bar').contains(e.target)) nlCloseIT();
+});
+document.addEventListener('keydown',(e)=>{
+  if(e.key==='Escape') nlCloseIT();
+  if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k'){
+    e.preventDefault();nlInputIT.focus();
+  }
+});
+
+function nlAskIT(q){
+  nlSuggsIT.style.display='none';
+  nlConvIT.classList.add('show');
+  const userDiv = document.createElement('div');
+  userDiv.className='nl-msg user';
+  userDiv.textContent = q;
+  nlConvIT.appendChild(userDiv);
+  const typingDiv = document.createElement('div');
+  typingDiv.className='nl-msg lumina';
+  typingDiv.innerHTML = `<div class="src">Lumina · thinking</div><div class="nl-typing"><span></span><span></span><span></span></div>`;
+  nlConvIT.appendChild(typingDiv);
+  nlConvIT.scrollTop = nlConvIT.scrollHeight;
+  setTimeout(()=>{
+    const match = NL_RESPONSES_IT.find(r=>r.pattern.test(q));
+    const text = match ? match.render() : `
+      <div class="src">Lumina</div>
+      <p>I don't have a specific answer to that yet. Try asking about port flaps, MTTR trend, dormant integrations, agent auto-fixes today, wake-up failures, or P1 alert distribution.</p>
+    `;
+    typingDiv.innerHTML = text;
+    nlConvIT.scrollTop = nlConvIT.scrollHeight;
+  }, 700+Math.random()*500);
+  nlInputIT.value = '';
+}
+nlInputIT.addEventListener('keydown',(e)=>{
+  if(e.key==='Enter' && nlInputIT.value.trim()) nlAskIT(nlInputIT.value.trim());
+});
+document.querySelectorAll('.nl-sugg').forEach(s=>{
+  s.addEventListener('click',()=> nlAskIT(s.dataset.q));
+});
+document.getElementById('nl-clear').addEventListener('click',()=>{
+  nlConvIT.innerHTML='';
+  nlConvIT.classList.remove('show');
+  nlSuggsIT.style.display='block';
+});
+
+
+// ============ SIMULATION ENGINE (IT) ============
+const SIM_IT_EVENTS = [
+  // continuous background
+  {time:'continuous',sev:'info',label:'SIP',prop:'Solent',msg:'<strong>SIP REGISTER</strong> dect-base-04 · 200 OK',meta:'15ms'},
+  {time:'continuous',sev:'ok',label:'CDR',prop:'Cottons',msg:'<strong>Call ended</strong> ext 2014 → 9-44-1142… · MOS 4.3',meta:'4m 12s'},
+  {time:'continuous',sev:'info',label:'PMS',prop:'Aztec',msg:'<strong>Check-in</strong> room 218 · BroadSoft posted',meta:'OK'},
+  {time:'continuous',sev:'agent',label:'AGENT',prop:'Cottons',msg:'<strong>Sadie</strong> handled out-of-hours request · room 412',meta:'+0s'},
+  {time:'continuous',sev:'info',label:'PMS',prop:'Solent',msg:'<strong>Wake-up scheduled</strong> room 307 for 06:30',meta:'OK'},
+  {time:'continuous',sev:'ok',label:'SYS',prop:'Kettering',msg:'<strong>BMS heartbeat</strong> trend-iq4-01 · within bounds',meta:'2s'},
+  {time:'continuous',sev:'info',label:'SIP',prop:'Thorpe',msg:'<strong>SIP REGISTER</strong> dect-base-02 · 200 OK',meta:'12ms'},
+  {time:'continuous',sev:'info',label:'PMS',prop:'Cottons',msg:'<strong>Room status</strong> 412 → ready · housekeeping done',meta:'OK'},
+  // wow moments
+  {time:7000,sev:'warn',label:'SIP',prop:'Cottons',msg:'<strong>SIP REGISTER fail</strong> dect-base-02 · 401 unauthorized · attempt 3',meta:'+2.4σ',float:{type:'warn',h:'DECT registration anomaly',d:'Three SIP REGISTER 401s within 90 seconds at <strong>Cottons</strong> · dect-base-02 · likely PoE port issue. Net-ops will auto-investigate.',meta:'Cottons · 17:42 · Watch'}},
+  {time:14000,sev:'warn',label:'SYS',prop:'Cottons',msg:'<strong>PoE port flap storm</strong> sw-edge-01 1/0/14 · 3 cycles in 10min',meta:'+3.1σ'},
+  {time:20000,sev:'agent',label:'AGENT',prop:'Cottons',msg:'<strong>Net-ops auto-fix</strong> power-cycled sw-edge-01 port 1/0/14 · per policy',meta:'authorized',float:{type:'agent',h:'Auto-fix · Net-ops',d:'<strong>Net-ops</strong> power-cycled sw-edge-01 port 1/0/14 (DECT base PoE budget). Authorized by policy <code>netops.port_cycle v1.1.0</code>. Recovery in progress.',meta:'Cottons · 17:43 · Auto-fix'}},
+  {time:27000,sev:'ok',label:'SIP',prop:'Cottons',msg:'<strong>SIP REGISTER recovered</strong> dect-base-02 · 200 OK · 15ms',meta:'fixed'},
+  {time:34000,sev:'crit',label:'PMS',prop:'Langdale',msg:'<strong>PMS link silent</strong> GuestLine · no events &gt; 30 min · alert opened',meta:'+5.8σ',float:{type:'crit',h:'P1 · Langdale PMS Link',d:'GuestLine PMS link is heartbeat-only since 17:00. <strong>14 check-ins not posted to PBX.</strong> Auto-triaged to NetOps; estimated restoration 90 min.<br><a href="?view=alerts" style="color:var(--teal);font-weight:600">View alert →</a>',meta:'Langdale · 17:45 · P1'}},
+  {time:48000,sev:'agent',label:'AGENT',prop:'Langdale',msg:'<strong>Mike</strong> queued 14 check-ins for replay when PMS link returns',meta:'authorized'},
+  {time:60000,sev:'warn',label:'SLA',prop:'Langdale',msg:'<strong>Wake-up SLA at risk</strong> · 6 failures today · breach threshold approaching',meta:'+3.2σ'},
+];
+
+let simRunningIT = false, simStartIT = null, simIntIT = null, simTimersIT = [];
+const simBtnIT = document.getElementById('sim-toggle');
+const simLblIT = document.getElementById('sim-label');
+const simClkIT = document.getElementById('sim-clock');
+const tickerBodyIT = document.getElementById('it-ticker-body');
+const floatAlertsIT = document.getElementById('float-alerts-it');
+
+function tickerRowIT(ev){
+  const now = new Date();
+  const time = now.toTimeString().slice(0,8);
+  const div = document.createElement('div');
+  div.className='it-ticker-row';
+  div.innerHTML = `
+    <span class="it-ticker-time">${time}</span>
+    <span><span class="it-ticker-sev ${ev.sev}">${ev.label}</span></span>
+    <span class="it-ticker-prop">${ev.prop}</span>
+    <span class="it-ticker-msg">${ev.msg}</span>
+    <span class="it-ticker-meta">${ev.meta||''}</span>
+  `;
+  return div;
+}
+function pushTickerIT(ev){
+  if(!tickerBodyIT) return;
+  tickerBodyIT.insertBefore(tickerRowIT(ev), tickerBodyIT.firstChild);
+  while(tickerBodyIT.children.length > 8) tickerBodyIT.removeChild(tickerBodyIT.lastChild);
+}
+function showFloatIT(spec){
+  if(!floatAlertsIT) return;
+  const div = document.createElement('div');
+  div.className = 'float-alert-it ' + (spec.type||'info');
+  div.innerHTML = `
+    <div class="float-h">${spec.h}</div>
+    <div class="float-d">${spec.d}</div>
+    <div class="float-meta"><span>${spec.meta||''}</span><a href="#">Acknowledge</a></div>
+  `;
+  div.addEventListener('click',()=>div.remove());
+  floatAlertsIT.appendChild(div);
+  setTimeout(()=>{ if(div.parentElement) div.remove(); }, 14000);
+}
+
+function startSimIT(){
+  if(simRunningIT) return;
+  simRunningIT = true;
+  simStartIT = Date.now();
+  simBtnIT.classList.add('live');
+  simLblIT.textContent = 'Live';
+  simIntIT = setInterval(()=>{
+    if(!simRunningIT) return;
+    const continuous = SIM_IT_EVENTS.filter(e=>e.time==='continuous');
+    pushTickerIT(continuous[Math.floor(Math.random()*continuous.length)]);
+  }, 3500);
+  SIM_IT_EVENTS.filter(e=>typeof e.time==='number').forEach(ev=>{
+    const t = setTimeout(()=>{
+      if(!simRunningIT) return;
+      pushTickerIT(ev);
+      if(ev.float) showFloatIT(ev.float);
+    }, ev.time);
+    simTimersIT.push(t);
+  });
+  const clockTimer = setInterval(()=>{
+    if(!simRunningIT){clearInterval(clockTimer);return;}
+    const elapsed = Math.floor((Date.now() - simStartIT)/1000);
+    simClkIT.textContent = elapsed + 's';
+  },1000);
+  simTimersIT.push(clockTimer);
+}
+function stopSimIT(){
+  simRunningIT = false;
+  simBtnIT.classList.remove('live');
+  simLblIT.textContent = 'Static';
+  simClkIT.textContent = '0s';
+  if(simIntIT) clearInterval(simIntIT);
+  simTimersIT.forEach(t=>clearTimeout(t));
+  simTimersIT = [];
+  if(floatAlertsIT) floatAlertsIT.innerHTML = '';
+}
+simBtnIT.addEventListener('click',()=>{
+  simRunningIT ? stopSimIT() : startSimIT();
+});
+
+// ============ HANDOFF FROM BUSINESS DASHBOARD ============
+(function(){
+  const params = new URLSearchParams(location.search);
+  const from = params.get('from');
+  if(from !== 'biz') return;
+
+  const bar = document.getElementById('handoff-bar');
+  const txt = document.getElementById('handoff-text');
+  const back = document.getElementById('handoff-back');
+  const close = document.getElementById('handoff-close');
+
+  // context message based on what triggered the handoff
+  const ctx = params.get('context') || 'drift';
+  const site = params.get('site') || 'Cottons Hotel';
+  const labels = {
+    drift: `Opened from <strong>${site} · Today</strong> · drift card "<strong>Reception answer rate 3 days below standard</strong>"`,
+    pattern: `Opened from <strong>Brand patterns</strong> · "<strong>Wake-up failures cluster at properties on legacy DECT</strong>"`,
+    capacity: `Opened from <strong>${site} · Today</strong> · capacity prediction`,
+  };
+  txt.innerHTML = labels[ctx] || labels.drift;
+
+  bar.classList.add('show');
+
+  // jump straight to the alert that's causing it
+  const alertId = params.get('alert');
+  if(alertId){
+    setTimeout(()=>{ goAlert(); }, 60);
+  }
+
+  back.addEventListener('click', ()=>{
+    // return to the business dashboard at the spot it came from
+    location.href = 'biz_dashboard.html?return=it';
+  });
+  close.addEventListener('click', ()=>{
+    bar.classList.remove('show');
+    // clean URL but stay put
+    history.replaceState({}, '', location.pathname);
+  });
+})();
+
+// ============ REVERSE HANDOFF (IT alert → business view) ============
+(function(){
+  const link = document.getElementById('open-in-biz');
+  if(!link) return;
+  link.addEventListener('click', (e)=>{
+    e.preventDefault();
+    // open business dashboard at this property's Today section, with a return chip
+    location.href = 'biz_dashboard.html?from=it&alert=ALR-2026-0419-0731&site=Cottons+Hotel';
+  });
+})();
+</script>
+</body>
+</html>

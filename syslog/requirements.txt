@@ -1,0 +1,6 @@
+# Edge agent runtime dependencies.
+#   sudo -u edge-agent /opt/edge-agent/venv/bin/pip install -r requirements.txt
+requests>=2.31.0
+
+# Development / test only (not needed on an edge box):
+#   pytest>=8.0.0

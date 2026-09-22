@@ -1,0 +1,117 @@
+# =============================================================================
+# Docker Compose — IT Dashboard PRODUCTION
+#
+# Services:
+#   - postgres   → PostgreSQL 16 (internal only)
+#   - redis      → Redis 7 (internal only)
+#   - api        → FastAPI app exposed on host port 4000
+#
+# How to use (run from it-dashboard-api/ directory):
+#   Build + start:    docker compose -f infra_docker/docker-compose.prod.yml up -d --build
+#   View logs:        docker compose -f infra_docker/docker-compose.prod.yml logs -f api
+#   Restart API:      docker compose -f infra_docker/docker-compose.prod.yml restart api
+#   Stop all:         docker compose -f infra_docker/docker-compose.prod.yml down
+#   Wipe all data:    docker compose -f infra_docker/docker-compose.prod.yml down -v
+#
+# Required: create a .env.prod file in it-dashboard-api/ before running.
+# See .env.prod.example for the required variables.
+#
+# API will be available at http://<server-ip>:4000
+# Swagger UI at         http://<server-ip>:4000/docs
+# =============================================================================
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # PostgreSQL 16
+  # Internal only — not exposed to host
+  # ---------------------------------------------------------------------------
+  postgres:
+    container_name: hosp_postgres_prod
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       ${POSTGRES_DB:-hosp_prod}
+      POSTGRES_USER:     ${POSTGRES_USER:-hosp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA:            /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - hosp_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hosp} -d ${POSTGRES_DB:-hosp_prod}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  # ---------------------------------------------------------------------------
+  # Redis 7
+  # Internal only — not exposed to host
+  # ---------------------------------------------------------------------------
+  redis:
+    container_name: hosp_redis_prod
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    networks:
+      - hosp_net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  # ---------------------------------------------------------------------------
+  # FastAPI application
+  # Runs migrations on startup then starts uvicorn
+  # Exposed directly on host port 4000
+  # ---------------------------------------------------------------------------
+  api:
+    container_name: hosp_api_prod
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    env_file:
+      - ../.env.prod
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-hosp}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-hosp_prod}
+      REDIS_URL:    redis://redis:6379
+      ENVIRONMENT:  production
+    networks:
+      - hosp_net
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:4000/livez')\""]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+# =============================================================================
+# Internal network — postgres and redis only reachable by the api container
+# =============================================================================
+networks:
+  hosp_net:
+    name: hosp_prod_net
+    driver: bridge
+
+# =============================================================================
+# Named volumes — data persists across restarts (not down -v)
+# =============================================================================
+volumes:
+  postgres_data:
+    name: hosp_postgres_prod_data
+  redis_data:
+    name: hosp_redis_prod_data

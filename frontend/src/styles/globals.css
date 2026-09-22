@@ -1,0 +1,199 @@
+@import './tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-bg text-text font-sans;
+    font-size: 13px;
+    line-height: 1.5;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: inherit;
+  }
+}
+
+@layer components {
+  .mono {
+    @apply font-mono;
+    font-size: 12px;
+    letter-spacing: 0;
+  }
+
+  /* Buttons */
+  .btn {
+    @apply inline-flex items-center gap-1.5 rounded-token border border-border2 bg-surface text-text;
+    padding: 6px 11px;
+    font-size: 11.5px;
+    font-weight: 500;
+    transition: background 0.1s, border-color 0.1s;
+  }
+  .btn:hover {
+    @apply bg-surface2 border-border3;
+  }
+  .btn-prime {
+    @apply bg-text text-bg border-text;
+  }
+  .btn-prime:hover {
+    @apply bg-text2 border-text2 text-bg;
+  }
+  .btn-danger {
+    @apply bg-red-bg text-red border-red-dim;
+  }
+  .btn-danger:hover {
+    @apply bg-red-dim text-white;
+  }
+  .btn-ghost {
+    @apply border-transparent bg-transparent text-text2;
+  }
+  .btn-ghost:hover {
+    @apply text-text bg-surface;
+  }
+
+  /* Chips */
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-[10px] border border-border bg-surface text-text2 uppercase whitespace-nowrap;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 7px;
+    letter-spacing: 0.01em;
+  }
+  .chip-red { @apply bg-red-bg text-red border-red-dim; }
+  .chip-amber { @apply bg-amber-bg text-amber border-amber-dim; }
+  .chip-green { @apply bg-green-bg text-green border-green-dim; }
+  .chip-blue { @apply bg-blue-bg text-blue border-blue-bg; }
+  .chip-teal { @apply bg-teal-bg text-teal border-teal-dim; }
+  .chip-dim { @apply bg-transparent text-text3 border-border2 normal-case;
+    letter-spacing: 0;
+  }
+
+  /* Dot status */
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 9999px;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  .dot-red { background: rgb(var(--red)); box-shadow: 0 0 0 3px rgb(var(--red-bg)); }
+  .dot-amber { background: rgb(var(--amber)); box-shadow: 0 0 0 3px rgb(var(--amber-bg)); }
+  .dot-green { background: rgb(var(--green)); }
+  .dot-gray { background: rgb(var(--text4)); }
+  .dot-pulsing { animation: pulse 1.6s ease-in-out infinite; }
+
+  /* Agent triaged badge */
+  .agent-tag {
+    @apply inline-flex items-center gap-1 rounded-[9px] border border-teal-dim bg-teal-bg text-teal;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 1px 6px 1px 5px;
+  }
+  .agent-tag::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 9999px;
+    background: rgb(var(--teal));
+  }
+
+  /* Severity pills */
+  .sev-pill {
+    @apply inline-flex items-center gap-1 rounded-[9px] uppercase font-sans;
+    font-size: 9.5px;
+    font-weight: 700;
+    padding: 2px 8px;
+    letter-spacing: 0.04em;
+  }
+  .sev-pill-crit { @apply bg-red-bg text-red border border-red-dim; }
+  .sev-pill-warn { @apply bg-amber-bg text-amber border border-amber-dim; }
+  .sev-pill-info { @apply bg-blue-bg text-blue; }
+  .sev-pill-ok { @apply bg-green-bg text-green border border-green-dim; }
+  .sev-pill-agent { @apply bg-teal-bg text-teal border border-teal-dim; }
+
+  /* Filter pills */
+  .filter-pill {
+    @apply rounded-full border border-border2 bg-surface text-text2;
+    padding: 5px 11px;
+    font-size: 11.5px;
+    cursor: pointer;
+    transition: color 0.1s, border-color 0.1s, background 0.1s;
+  }
+  .filter-pill:hover { @apply text-text border-border3; }
+  .filter-pill.active { @apply bg-text text-bg border-text; }
+
+  /* Full-page headers (HTML prototype: page-alerts, etc.) */
+  .page-head {
+    @apply mb-[18px] flex flex-wrap items-end justify-between gap-3;
+  }
+  .page-h1 {
+    @apply text-[22px] font-medium leading-tight tracking-tight text-text;
+  }
+  .page-sub {
+    @apply mt-1 text-[12.5px] text-text2;
+  }
+
+  /* Card + data table (HTML prototype: it-card / it-table) */
+  .it-card {
+    @apply overflow-hidden rounded-token-lg border border-border bg-surface;
+  }
+  .it-card-head {
+    @apply flex items-center justify-between border-b border-border px-[18px] py-[13px];
+  }
+  .it-card-title {
+    @apply text-[13px] font-semibold text-text;
+  }
+  .it-card-sub {
+    @apply mt-px text-[10.5px] text-text3;
+  }
+  .it-table {
+    @apply w-full border-collapse font-sans;
+  }
+  .it-table th {
+    @apply whitespace-nowrap border-b border-border bg-surface2 px-3.5 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wider text-text3;
+  }
+  .it-table td {
+    @apply border-b border-border px-3.5 py-2.5 align-middle text-xs text-text;
+  }
+  .it-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+  .it-table tbody tr:hover {
+    @apply bg-surface2;
+  }
+  .it-table .num {
+    @apply text-right font-mono;
+  }
+  .it-table .mono {
+    @apply font-mono text-[11px];
+  }
+}
+
+@layer utilities {
+  .page-fade-in {
+    animation: fadeIn 0.18s ease-out;
+  }
+  .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: rgb(var(--border2)); border-radius: 6px; }
+}

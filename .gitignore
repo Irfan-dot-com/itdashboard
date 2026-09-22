@@ -1,0 +1,17 @@
+.env
+.env.prod
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+dist/
+build/
+.coverage
+htmlcov/
+logs/
+
+# Vendor/customer-supplied documents - never commit these
+*.pdf
+*.docx
+*.xlsx
